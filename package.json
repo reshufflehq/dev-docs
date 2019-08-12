@@ -8,7 +8,9 @@
     "@binaris/shift-db": "^0.3.0",
     "@binaris/shift-fetch-runtime": "0.0.3",
     "@binaris/shift-local-proxy": "0.0.8",
+    "bootstrap": "^4.3.1",
     "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.11",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
   },
