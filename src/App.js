@@ -2,13 +2,11 @@ import '@binaris/shift-code-transform/macro';
 
 import React, { useState, Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
+
 import Sidebar from 'react-sidebar';
-
-import scrollToElement from 'scroll-to-element';
-
 import Button from 'react-bootstrap/Button';
 
-import './style/App.css';
+import scrollToElement from 'scroll-to-element';
 
 import { getPostMeta } from '../backend/contentBackend';
 
@@ -17,6 +15,10 @@ import Routes from './Routes';
 import SideBarMenu from './components/SideBarMenu';
 import SidebarContent from './containers/SidebarContent';
 import Nav from './containers/Nav';
+
+import './style/App.css';
+
+const { FAKE_RUN } = process.env;
 
 const mql = window.matchMedia(`(min-width: 800px)`);
 
@@ -37,11 +39,13 @@ const sidebarStyles = {
 };
 
 const sidebarCategories = [
-  'Installation',
+  'Getting Started',
   'Main Concepts',
-  'Advanced',
+  'API Reference',
   'Testing',
   'FAQ',
+  'Template Apps',
+  'Community',
 ];
 
 class App extends Component {
@@ -53,13 +57,15 @@ class App extends Component {
       navOpen: false,
       postMeta: undefined,
     };
-
-    this.mediaQueryChanged = this.mediaQueryChanged.bind(this);
-    this.onSetSidebarOpen = this.onSetSidebarOpen.bind(this);
   }
 
   async componentDidMount() {
-    const postMeta = require('./postMeta.json');
+    let postMeta;
+    if (FAKE_RUN === true) {
+      postMeta = require('./postMeta.json');
+    } else {
+      postMeta = await getPostMeta();
+    }
     this.setState({ postMeta });
   }
 
@@ -87,28 +93,33 @@ class App extends Component {
     mql.removeListener(this.mediaQueryChanged);
   }
 
-  onSetSidebarOpen(open) {
-    this.setState({ sidebarOpen: open });
-  }
-
-  mediaQueryChanged() {
+  mediaQueryChanged = () => {
     const sidebarOpen = mql.matches;
     this.setState({ sidebarDocked: mql.matches, sidebarOpen });
   }
 
-  handleLinkSelected = (event) => {
-    this.setState({ navOpen: false });
+  getMobileButton() {
+    const { navOpen } = this.state;
+    const className = navOpen ? 'fa fa-remove' : 'fa fa-bars';
+
+    return (
+      <Button variant='dark'
+              size='lg'
+              onClick={() => { this.setState({ navOpen: !navOpen }) }}
+      >
+        <span className={className} aria-hidden='true'></span>
+      </Button>
+    );
   }
 
   render() {
-    if (this.state.postMeta !== undefined) {
-      const childProps = {
-        pages: this.state.postMeta,
-      };
-
+    const { postMeta } = this.state;
+    if (postMeta !== undefined) {
       const ConfiguredSidebar = (
         <SidebarContent pages={this.state.postMeta}
-                        handleLinkSelected={this.handleLinkSelected}
+                        handleLinkSelected={
+                          () => this.setState({ navOpen: false })
+                        }
                         categories={sidebarCategories}
                         isResponsive={this.state.navOpen}
         />
@@ -124,34 +135,17 @@ class App extends Component {
               pullRight={true}
               open={this.state.sidebarOpen}
               docked={this.state.sidebarDocked}
-              onSetOpen={this.onSetSidebarOpen}
+              onSetOpen={(open) => this.setState({ sidebarOpen: open })}
               styles={{ ...sidebarStyles }}
               sidebar={ConfiguredSidebar}
             >
               {
-                this.state.navOpen ?
-                  ConfiguredSidebar
-                :
-                  <Routes childProps={childProps} />
+                this.state.navOpen ? ConfiguredSidebar :
+                  <Routes childProps={{ pages: postMeta }} />
               }
             </Sidebar>
             <div className='mobile-button'>
-              {
-                this.state.navOpen ?
-                  <Button variant="dark"
-                          size='lg'
-                          onClick={() => { this.setState({ navOpen: false }) }}
-                  >
-                    <span className='fa fa-remove' aria-hidden='true'></span>
-                  </Button>
-                :
-                  <Button variant='dark'
-                          size='lg'
-                          onClick={() => { this.setState({ navOpen: true }) }}
-                  >
-                    <span className='fa fa-bars' aria-hidden='true'></span>
-                  </Button>
-              }
+              { this.getMobileButton() }
             </div>
           </div>
         </div>

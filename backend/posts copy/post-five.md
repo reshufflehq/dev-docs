@@ -6,9 +6,6 @@ category: 'installation'
 isDefault: true
 ---
 
-dasdasdas
-
-
 # Getting Started
 
 *   [Overview](#overview)

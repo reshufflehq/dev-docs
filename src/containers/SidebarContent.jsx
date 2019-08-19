@@ -4,7 +4,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-import '../style/SidebarContent.css';
+import '../style/SidebarContent.scss';
 
 function renderCategory(category, pages, handleLinkSelected) {
   if (Object.prototype.hasOwnProperty.call(pages, category)) {
@@ -30,6 +30,9 @@ function renderCategory(category, pages, handleLinkSelected) {
 
 function SidebarContent(props) {
   const { pages, handleLinkSelected, categories, isResponsive } = props;
+  
+  // Sort our pages into their respective sidebar categories. Pages without
+  // matching categories will be assigned the 'unknown' container
   const pagesByCategory = { unknown: [] };
   pages.forEach(({ category, title, priority, fileName }) => {
     if (category === undefined) {
@@ -42,17 +45,17 @@ function SidebarContent(props) {
   });
 
   const rClass = isResponsive ? 'responsive-card' : '';
-  const contentClass = isResponsive ? 'responsive-sidebar-content' : 'sidebar-content';
+  const contentClass = isResponsive ? 'sidebar-responsive-content' : 'sidebar-content';
   return (
-    <div className={`sidebar-all ${contentClass}`}>
-      <Accordion className='myaccordion'>
+    <div className={`sidebar ${contentClass}`}>
+      <Accordion className='sidebar-accordion'>
         {
           categories.map((category, i) => {
             const eKey = isResponsive ? undefined : i;
             return (
               <Card className={rClass} key={category.toLowerCase()}>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey={eKey}>
+                  <Accordion.Toggle as={Button} variant='link' eventKey={eKey}>
                     {category}&nbsp;&nbsp;
                     {
                       (eKey !== undefined) && <span className='fa fa-caret-down' aria-hidden='true'></span>
@@ -60,7 +63,7 @@ function SidebarContent(props) {
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey={eKey}>
-                  <Card.Body className='card-body'>
+                  <Card.Body>
                     {
                       renderCategory(category.toLowerCase(), pagesByCategory, handleLinkSelected)
                     }
@@ -74,18 +77,5 @@ function SidebarContent(props) {
     </div>
   );
 }
-
-
-//       {
-//         pages.map(({ fileName, title }) => {
-//           const trimmed = fileName.slice(0, -3);
-//           return (
-//             <div key={trimmed} className='sidebar-link-container'>
-//               // <Link key={trimmed} onClick={handleLinkSelected} style={{ textDecoration: 'none', color: 'black', outline: 'none' }} to={trimmed}>{title}</Link>
-//             </div>
-//           );
-//         })
-//       }
-
 
 export default withRouter(SidebarContent);

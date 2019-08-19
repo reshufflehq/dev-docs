@@ -1,13 +1,14 @@
-import '@binaris/shift-code-transform/macro';
-
-// import { loadPostByTitle } from '../../backend/contentBackend';
+import '@binaris/shift-code-transform/macro'; 
+import { loadPostByTitle } from '../../backend/contentBackend';
 
 import React, { Component } from 'react';
 
 import '../style/ContentContainer.css';
 import 'github-markdown-css';
 
-async function loadPostByTitle(title) {
+const { FAKE_RUN } = process.env;
+
+async function fakePostByTitle(title) {
   const loadedPosts = require('../post-data.json');
 
   const postKeys = Object.keys(loadedPosts);
@@ -33,7 +34,12 @@ export default class ContentContainer extends Component {
   async componentDidMount() {
     const { title } = this.props.meta;
     if (title) {
-      const content = await loadPostByTitle(title);
+      let content;
+      if (FAKE_RUN === true) {
+        content = await loadPostByTitle(title);
+      } else {
+        content = await fakePostByTitle(title);
+      }
       this.setState({ content });
       document.getElementById('markdown-content').innerHTML = content;
     }
@@ -42,7 +48,7 @@ export default class ContentContainer extends Component {
   render() {
     return (
       <div className='content-container' id='content-container'>
-        <div id='markdown-content' className='markdown-body' />
+        <div id='markdown-content' className='markdown-body'/>
       </div>
     );
   }

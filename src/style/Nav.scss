@@ -1,0 +1,47 @@
+.nav-bar {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  position: absolute;
+  width: inherit;
+  max-width: inherit;
+  height: inherit;
+  max-height: inherit;
+  background-color: black;
+
+  &-right {
+    width: 30%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: 5%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 32px;
+    color: white;
+  }
+
+  &-discord {
+    width: inherit;
+    height: inherit;
+  }
+
+  a {
+    margin-left: 3%;
+    margin-right: 3%;
+    text-decoration: none;
+    outline: none;
+    color: white;
+  }
+}
+
+
+.logo {
+  color: #ff4f4f;
+  font-family: Helvetica, sans-serif;
+  font-size: 33px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-decoration: none;
+  margin-left: 2%;
+}

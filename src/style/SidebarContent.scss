@@ -1,0 +1,73 @@
+.sidebar {
+  margin-left: 10%;
+  margin-right: 10%;
+  display: flex;
+  flex-direction: column;
+
+  &-content {
+    margin-top: 20%;
+  }
+
+  &-responsive-content {
+    margin-top: 10%;
+  }
+
+  &-accordion {
+    .card:not(:first-child) {
+      margin-top: 10%;
+    }
+
+    .responsive-card:not(:first-child) {
+      margin-top: 2%;
+    }
+
+    .card {
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .card, .card .card-header {
+      border: none;
+    }
+
+    .card-header {
+      background: transparent;
+      padding: 0;
+    }
+
+    .fa-stack {
+      font-size: 18px;
+    }
+
+    .btn {
+      width: 100%;
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      padding: 0;
+      text-align: left;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .btn-link {
+      text-decoration: none;
+      color: rgba(0, 0, 0, 0.7);
+      font-weight: 600;
+    }
+
+    .btn-link:hover, .btn-link:focus {
+      text-decoration: none;
+      color: black;
+    }
+     
+    li + li {
+      margin-top: 10px;
+    }
+  }
+}
+
+@media only screen and (min-width: 800px) {
+  .mobile-button {
+    display: none;
+  }
+}
