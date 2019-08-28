@@ -2,28 +2,50 @@ import { create, get } from '@binaris/shift-db';
 
 import { promisify } from 'util';
 import { cwd } from 'process';
-import { join } from 'path';
-import { readFile, readdir } from 'fs';
+import { basename, join } from 'path';
+import { readFile } from 'fs';
 
+import unified from 'unified';
+import parse from 'remark-parse';
+import remark2rehype from 'remark-rehype';
+import stringify from 'rehype-stringify';
+import slug from 'rehype-slug';
+import link from 'rehype-autolink-headings';
+import glob from 'glob';
 import fm from 'front-matter';
-import marked from 'marked';
 
+const processor = unified()
+  .use(parse)
+  .use(remark2rehype)
+  .use(slug)
+  .use(link)
+  .use(stringify);
+
+const globAsync = promisify(glob);
 const readAsync = promisify(readFile);
-const readdirAsync = promisify(readdir);
-
-const mdRegex = new RegExp(/^.*\.(md)$/);
 
 const postsDir = 'backend/posts';
 
 async function loadAllPosts() {
-  const joinedPath = join(cwd(), postsDir);
-  const allFiles = await readdirAsync(joinedPath);
+  // match all markdown files inside the specified posts
+  // directory, or any of its subdirectories
+  const globPath = join(cwd(), postsDir, '**/*.md');
+  const allFiles = await globAsync(globPath, {});
   const loadedPosts = {};
-  await Promise.all(allFiles.map(async (fileName) => {
-    if (mdRegex.test(fileName)) {
-      const rawMD = await readAsync(join(joinedPath, fileName), 'utf8');
-      loadedPosts[fileName] = fm(rawMD);
-      loadedPosts[fileName].parsed = marked(loadedPosts[fileName].body);
+  // attempt to load all matched paths from the filesystem
+  await Promise.all(allFiles.map(async (filePath) => {
+    // pure filename no extension
+    const rawFileName = basename(filePath, '.md');
+    try {
+      const rawMD = await readAsync(filePath, 'utf8');
+      // just add the frontmatter
+      loadedPosts[rawFileName] = fm(rawMD);
+      const { contents } = await processor.process(loadedPosts[rawFileName].body);
+      loadedPosts[rawFileName].parsed = contents;
+    } catch (err) {
+      // make sure a broken post doesn't get returned
+      delete loadedPosts[rawFileName];
+      console.error(err);
     }
   }));
   return loadedPosts;
@@ -31,31 +53,40 @@ async function loadAllPosts() {
 
 async function getPosts() {
   const loaded = await loadAllPosts();
+  // once the DB is more flexible we can actually rely on
+  // it for retrieving the post contents
   create('posts', loaded);
   return loaded;
-
-  // const postsLoaded = await get('posts');
-
-  // if (postsLoaded) {
-  //   return postsLoaded;
-  // } else {
-  // }
 }
 
+/**
+ * Load a post from the backend. Case of the title does
+ * not matter, as all titles are compared with lowercase.
+ *
+ * @param { string } title - what the post is named
+ *
+ * @return { string } - html representation of the post
+ */
 // @expose
 export async function loadPostByTitle(title) {
   const loadedPosts = await getPosts();
-
   const postKeys = Object.keys(loadedPosts);
   for (let i = 0; i < postKeys.length; i += 1) {
+    // extract the attributes which are derived from post frontmatter
     const { attributes } = loadedPosts[postKeys[i]];
-    if (attributes.title === title) {
+    if (attributes.title.toLowerCase() === title.toLowerCase()) {
       return loadedPosts[postKeys[i]].parsed;
     }
   }
   throw new Error(`No post found with title: ${title}`);
 }
 
+/**
+ * Returns the metadata of all posts that currently
+ * reside in the backend posts directory.
+ *
+ * @return {object} - metadata of posts
+ */
 // @expose
 export async function getPostMeta() {
   const loadedPosts = await getPosts();
@@ -65,6 +96,5 @@ export async function getPostMeta() {
       fileName: postKey,
     };
   });
-
   return meta;
 }
