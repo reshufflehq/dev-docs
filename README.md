@@ -1,3 +1,7 @@
+Dev docs site of Reshuffle. Uses remark, rehype and prismjs to render markdown with syntax highlighting (even for JSX). Syntax style is directly borrowed from [ReactJS](reactjs.org).
+
+Keywords: javascript, react, create-react-app, fullstack, bootstrap, backend, markdown, prism, remark, rehype, reactjs
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

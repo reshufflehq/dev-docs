@@ -1,0 +1,48 @@
+.content-container {
+  height: 100%;
+  width: 100%;
+
+  /* center the content container */
+  float: right;
+  margin-left: 20%;
+  margin-right: 0%;
+  padding-top: 5%;
+  padding-bottom: 10vh;
+  /* no x dim scroll */
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.markdown-body {
+  position: relative;
+  // no scrolling on the markdown content itself
+  margin-left: auto;
+  margin-right: auto;
+  // keep main content from blowing up on big screens
+  max-width: 800px;
+
+  // TODO: unify font sizes with rem and root defs
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* specifically make scrollbar 0 dim for webkit based browsers */
+.content-container::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+// for smaller desktops and mobile
+@media only screen and (max-height: 600px) {
+  .content-container {
+    padding-bottom: 75px;
+  }
+}
+
+// for smaller desktops and mobile
+@media only screen and (max-width: 1300px) {
+  .content-container {
+    width: 80%;
+    margin-right: 10%;
+  }
+}

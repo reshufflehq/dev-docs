@@ -2,46 +2,57 @@
   display: flex;
   justify-content: left;
   align-items: center;
-  position: absolute;
-  width: inherit;
-  max-width: inherit;
-  height: inherit;
-  max-height: inherit;
-  background-color: black;
 
-  &-right {
-    width: 30%;
-    height: 100%;
-    margin-left: auto;
-    margin-right: 5%;
+  width: inherit;
+  height: inherit;
+  min-width: 300px;
+
+  // TODO: Replace with global color
+  background-color: #3A3535;
+
+  &-content {
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    font-size: 32px;
+    /* take sidebar width into account */
+    width: calc(100% - 300px);
+  }
+
+  &-title {
+    // with this width the title is always displayed
+    min-width: 100px;
+    margin-left: 20px;
+  }
+
+  &-icons {
+    display: flex;
+    justify-content: space-around;
+
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    // TODO: Replace with rem
+    font-size: 35px;
+    // TODO: Replace with global color
     color: white;
   }
 
-  &-discord {
-    width: inherit;
-    height: inherit;
-  }
-
   a {
-    margin-left: 3%;
-    margin-right: 3%;
     text-decoration: none;
     outline: none;
+    // TODO: Replace with global color
     color: white;
   }
 }
 
+@media only screen and (max-width: 800px) {
+  .nav-bar {
+    &-content {
+      width: 100%;
+    }
 
-.logo {
-  color: #ff4f4f;
-  font-family: Helvetica, sans-serif;
-  font-size: 33px;
-  font-weight: 400;
-  letter-spacing: 1px;
-  text-decoration: none;
-  margin-left: 2%;
+    &-right {
+      font-size: 28px;
+    }
+  }
 }

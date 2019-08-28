@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 import 'sanitize.css';
 import 'sanitize.css/forms.css';
 import 'sanitize.css/typography.css';
+import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import App from './App';

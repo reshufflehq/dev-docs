@@ -1,43 +1,44 @@
 import '@binaris/shift-code-transform/macro';
 
-import React, { useState, Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import Sidebar from 'react-sidebar';
 import Button from 'react-bootstrap/Button';
-
-import scrollToElement from 'scroll-to-element';
 
 import { getPostMeta } from '../backend/contentBackend';
 
 import Routes from './Routes';
 
-import SideBarMenu from './components/SideBarMenu';
 import SidebarContent from './containers/SidebarContent';
 import Nav from './containers/Nav';
 
-import './style/App.css';
+import './style/App.scss';
 
-const { FAKE_RUN } = process.env;
+const sidebarWidth = '300px';
 
-const mql = window.matchMedia(`(min-width: 800px)`);
-
-const LOGO_TEXT = '⇧Shift';
-
+// react-sidebar requires you to pass styles
 const sidebarStyles = {
+  content: {
+    overflow: 'hidden',
+  },
   sidebar: {
     overflow: 'auto',
-    minWidth: 'max-content',
-    width: '300px',
-    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+    minWidth: sidebarWidth,
+    maxWidth: sidebarWidth,
+    height: '100%',
+    width: sidebarWidth,
+    backgroundColor: '#F6F6F6',
   },
   root: {
     position: 'relative',
+    overflow: 'hidden',
     width: 'inherit',
     height: 'inherit'
   },
 };
 
+// these define the valid categories for the sidebar
 const sidebarCategories = [
   'Getting Started',
   'Main Concepts',
@@ -47,6 +48,9 @@ const sidebarCategories = [
   'Template Apps',
   'Community',
 ];
+
+// define a media query for views that are at least 800px
+const mql = window.matchMedia(`(min-width: 800px)`);
 
 class App extends Component {
   constructor(props) {
@@ -59,47 +63,35 @@ class App extends Component {
     };
   }
 
+  // fetch all of the posts metadata when the component mounts
   async componentDidMount() {
-    let postMeta;
-    if (FAKE_RUN === true) {
-      postMeta = require('./postMeta.json');
-    } else {
-      postMeta = await getPostMeta();
-    }
+    const postMeta = await getPostMeta();
     this.setState({ postMeta });
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      const scrollContainer = document.getElementById('content-container');
-      scrollContainer.scrollTo(0, 0)
-    } else {
-      this.jumpToHash();
-    }
-  }
-
-  jumpToHash = () => {
-    const hash = this.props.history.location.hash;
-    if (hash !== undefined && hash !== null && hash !== '') {
-      scrollToElement(hash, { offset: -120 });
-    }
-  }
-
+  // add the media query listener on tentative mount
   componentWillMount() {
     mql.addListener(this.mediaQueryChanged);
   }
 
+  // add the media query listener on tentative dismount
   componentWillUnmount() {
     mql.removeListener(this.mediaQueryChanged);
   }
 
   mediaQueryChanged = () => {
     const sidebarOpen = mql.matches;
-    this.setState({ sidebarDocked: mql.matches, sidebarOpen });
+    this.setState({
+      // if width is > 800px permanently display sidebar
+      sidebarDocked: mql.matches,
+      sidebarOpen,
+      navOpen: false,
+    });
   }
 
   getMobileButton() {
     const { navOpen } = this.state;
+    // displays the correct action icon based on nav state
     const className = navOpen ? 'fa fa-remove' : 'fa fa-bars';
 
     return (
@@ -128,7 +120,7 @@ class App extends Component {
       return (
         <div className='root-container'>
           <div className='nav-shaper'>
-            <Nav logoText={LOGO_TEXT}/>
+            <Nav/>
           </div>
           <div className='root-content'>
             <Sidebar

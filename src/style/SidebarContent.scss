@@ -1,15 +1,26 @@
 .sidebar {
-  margin-left: 10%;
-  margin-right: 10%;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+
+  &-category {
+    // TODO: Replace with global style and rem
+    font-family: Avenir;
+    font-style: bold;
+    font-weight: 800;
+  }
 
   &-content {
+    margin-left: 10%;
+    margin-right: 10%;
     margin-top: 20%;
   }
 
   &-responsive-content {
+    margin-left: 10%;
+    margin-right: 10%;
     margin-top: 10%;
+    padding-bottom: 100px;
   }
 
   &-accordion {
@@ -22,6 +33,7 @@
     }
 
     .card {
+      // remove the default backend color entirely
       background-color: rgba(0, 0, 0, 0);
     }
 
@@ -34,24 +46,21 @@
       padding: 0;
     }
 
-    .fa-stack {
-      font-size: 18px;
-    }
-
     .btn {
       width: 100%;
+      // TODO: Replace with global
       font-size: 16px;
       font-weight: 500;
       letter-spacing: 1px;
       padding: 0;
       text-align: left;
       text-decoration: none;
-      text-transform: uppercase;
     }
 
     .btn-link {
+      // TODO: Replace with global
       text-decoration: none;
-      color: rgba(0, 0, 0, 0.7);
+      color: black;
       font-weight: 600;
     }
 
@@ -64,10 +73,14 @@
       margin-top: 10px;
     }
   }
+
+  &-category-subitem {
+    margin-bottom: 3%;
+  }
 }
 
-@media only screen and (min-width: 800px) {
-  .mobile-button {
-    display: none;
-  }
+/* specifically make scrollbar 0 dim for webkit based browsers */
+.sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
