@@ -65,8 +65,12 @@ class App extends Component {
 
   // fetch all of the posts metadata when the component mounts
   async componentDidMount() {
-    const postMeta = await getPostMeta();
-    this.setState({ postMeta });
+    try {
+      const postMeta = await getPostMeta();
+      this.setState({ postMeta });
+    } catch (err) {
+      console.error('Failed to load post metadata');
+    }
   }
 
   // add the media query listener on tentative mount

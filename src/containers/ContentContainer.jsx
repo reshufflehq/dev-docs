@@ -37,8 +37,12 @@ export default class ContentContainer extends Component {
 
   async loader(title) {
     if (title) {
-      const content = await loadPostByTitle(title);
-      this.setState({ html: content });
+      try {
+        const content = await loadPostByTitle(title);
+        this.setState({ html: content });
+      } catch (err) {
+        console.error(`Failed to load post ${title}`);
+      }
     }
   }
 
