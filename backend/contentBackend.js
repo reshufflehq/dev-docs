@@ -199,11 +199,7 @@ export async function loadContentByRoute(route) {
  */
 // @expose
 export async function getContentMeta() {
-  const loadedContent = await getContent();
-  const meta = Object.keys(loadedContent).map((contentKey) => {
-    return {
-      ...loadedContent[contentKey].attributes,
-    };
-  });
-  return meta;
+  const loaded = await getContent();
+  return Object.keys(loaded).map((key) =>
+    loaded[key].attributes);
 }
