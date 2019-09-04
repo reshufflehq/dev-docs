@@ -1,5 +1,3 @@
-import { create, get } from '@binaris/shift-db';
-
 // JWT is our primary identification mechanism
 import * as jwt from 'jsonwebtoken';
 
@@ -30,9 +28,7 @@ async function verifyGoogleUser(token) {
     idToken: token,
     audience: OAUTH_CLIENT_ID,
   });
-  const payload = ticket.getPayload();
-  const userid = payload['sub'];
-  return payload;
+  return ticket.getPayload();
 }
 
 /**
@@ -47,7 +43,7 @@ async function verifyGoogleUser(token) {
  */
 /* @expose */
 export async function authenticateUser(googleToken) {
-  const payload = await verifyGoogleID(googleToken);
+  const payload = await verifyGoogleUser(googleToken);
   const { hd } = payload;
   if (hd === VALID_HOSTED_DOMAIN) {
     // store some basic (unreliable) profile information in the token
