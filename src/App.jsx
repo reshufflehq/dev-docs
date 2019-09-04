@@ -12,12 +12,13 @@ import Admin from './containers/Admin';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      userToken: undefined,
-    };
+    this.state = { userToken: undefined };
   }
 
   async componentDidMount() {
+    // try and retrieve a previously stored user token
+    // which will allow the client to visit protected
+    // routes
     let userToken;
     try {
       userToken = localStorage.getItem('userToken');
@@ -33,6 +34,9 @@ class App extends Component {
     this.setState({ userToken });
   }
 
+  /**
+   * Store a user token for future user
+   */
   storeUserToken = (userToken) => {
     localStorage.setItem('userToken', userToken);
     this.setState({ userToken });
@@ -44,6 +48,8 @@ class App extends Component {
       storeUserToken: this.storeUserToken,
     };
 
+    // If the route is an auth or admin route, display it.
+    // Otherwise, defer to the DevSite nested routing
     return (
       <Switch>
         <PrivateRoute path='/admin'

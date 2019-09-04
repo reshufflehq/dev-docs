@@ -14,8 +14,6 @@ function Routes(props) {
   // is provided by the backend
   const routes = childProps.pages.map((meta) => {
     const { route, isDefault } = meta;
-
-    // always use the filename as the main route path
     const routePaths = [`/${route}`];
     if (isDefault === true) {
       // only allow 1 default page
