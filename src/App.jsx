@@ -22,9 +22,7 @@ class App extends Component {
     let userToken;
     try {
       userToken = localStorage.getItem('userToken');
-      if (userToken !== null) {
-        userToken = userToken;
-      } else {
+      if (userToken === null) {
         userToken = undefined;
       }
     } catch (err) {
