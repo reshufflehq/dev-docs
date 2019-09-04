@@ -23,6 +23,7 @@
     "@binaris/shift-fetch-runtime": "0.0.3",
     "@binaris/shift-local-proxy": "0.0.8",
     "bootstrap": "^4.3.1",
+    "dotenv": "^8.1.0",
     "font-awesome": "^4.7.0",
     "front-matter": "^3.0.2",
     "google-auth-library": "^5.2.0",
@@ -69,7 +70,6 @@
   },
   "devDependencies": {
     "cypress": "^3.4.1",
-    "dotenv": "^8.1.0",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.3.0"
   },
