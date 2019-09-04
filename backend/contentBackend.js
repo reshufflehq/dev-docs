@@ -85,9 +85,24 @@ export async function parseMD(jwt, markdownContent) {
   return parseMDLocal(markdownContent);
 }
 
+/**
+ * Authenticated route which attempts to update or create a
+ * post, based on the provided content. The unique key of the
+ * content is based on the route attribute defined in the
+ * contents frontmatter. If the content does not define a route
+ * attribute, this method will fail.
+ *
+ * @param { string } jwt - token used for identification
+ * @param { string } content - valid markdown content with fronmatter containing route
+ * attribute
+ * @param { string } clientPrevContent - the content state the client currently believes exists in the
+ * remote
+ */
 /* @expose */
-export async function updateContent(jwt, content, prevContent = null) {
+export async function updateContent(jwt, content, clientPrevContent = null) {
   await validateJWT(jwt);
+  // parse the client provided markdown to extract
+  // the route attribute
   const parsed = await parseMDLocal(content);
   const route = parsed.attributes.route;
   // for some reason returning errors out of the updater
@@ -96,6 +111,7 @@ export async function updateContent(jwt, content, prevContent = null) {
   try {
     await update(contentKey, (prevContent) => {
       const copied = { ...prevContent };
+      // content must have a route
       if (route === undefined) {
         potentialError = {
           type: 'error',
@@ -105,9 +121,11 @@ export async function updateContent(jwt, content, prevContent = null) {
         };
         throw new Error(potentialError.message);
       }
+      // routes are forced into valid shape
       const clean = cleanRoute(route);
-      if (prevContent !== null &&
-          prevContent !== copied[clean].raw) {
+      // this makes it hard to accidentally overwrite content
+      if (clientPrevContent !== null &&
+          clientPrevContent !== copied[clean].raw) {
         potentialError = {
           type: 'error',
           code: 'CONTENT_HAS_CHANGED',
@@ -119,6 +137,7 @@ export async function updateContent(jwt, content, prevContent = null) {
       return copied;
     });
   } catch (err) {
+    // "err" object here is borked, need to rely on manual error
     return potentialError || {
       type: 'error',
       code: 'UNKNOWN_ERROR',
@@ -127,8 +146,17 @@ export async function updateContent(jwt, content, prevContent = null) {
   }
 }
 
+/**
+ * Authenticated route which retrieves the raw markdown
+ * representation of existing content.
+ *
+ * @param { string } jwt - token used for identification
+ * @param { string } route - route of raw markdown content to retrieve
+ *
+ * @return { string } - raw markdown for provided route
+ */
 /* @expose */
-export async function getMDByRoute(jwt, route) {
+export async function getContentByRoute(jwt, route) {
   await validateJWT(jwt);
   const loadedContent = await getContent();
   const contentKeys = Object.keys(loadedContent);

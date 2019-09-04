@@ -11,7 +11,7 @@ import {
   parseMD,
   updateContent,
   getContentMeta,
-  getMDByRoute,
+  getContentByRoute,
 } from '../../backend/contentBackend.js';
 
 import { isError } from '../backendHelpers.js';
@@ -60,7 +60,7 @@ export default class Admin extends Component {
 
   setPost = async (route) =>{
     try {
-      const res = await getMDByRoute(this.props.userToken, route);
+      const res = await getContentByRoute(this.props.userToken, route);
       this.setState({
         html: res.parsed,
         startingTextState: res.raw,
