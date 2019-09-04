@@ -7,13 +7,11 @@ import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
-import { css } from '@emotion/core';
-
 import {
-  parseMDPost,
-  updatePost,
-  getPostMeta,
-  getRawByRoute,
+  parseMD,
+  updateContent,
+  getContentMeta,
+  getMDByRoute,
 } from '../../backend/contentBackend.js';
 
 import { isError } from '../backendHelpers.js';
@@ -21,16 +19,6 @@ import { isError } from '../backendHelpers.js';
 import ContentContainer from './ContentContainer';
 
 import '../style/Admin.scss';
-
-const override = css`
-z-index: 10001;
-display: block;
-margin: 0 auto;
-position: relative;
-top: calc(50% - 70px);
--ms-transform: translateY(-50%);
-transform: translateY(-50%);
-`
 
 function PostDropdown ({ items, onSelect }) {
   return (
@@ -72,7 +60,7 @@ export default class Admin extends Component {
 
   setPost = async (route) =>{
     try {
-      const res = await getRawByRoute(this.props.userToken, route);
+      const res = await getMDByRoute(this.props.userToken, route);
       this.setState({
         html: res.parsed,
         startingTextState: res.raw,
@@ -93,13 +81,13 @@ export default class Admin extends Component {
   }
 
   async backgroundLoadPosts() {
-    const meta = await getPostMeta();
+    const meta = await getContentMeta();
     this.setState({ dropdownItems: meta });
   }
 
   async updateDisplay(rawContent) {
     try {
-      const parsed = await parseMDPost(this.props.userToken, rawContent);
+      const parsed = await parseMD(this.props.userToken, rawContent);
       this.setState({ html: parsed.parsed });
     } catch (err) {
       console.error(err);
@@ -118,7 +106,7 @@ export default class Admin extends Component {
     if (this.state.textAreaValue !== '' &&
         this.state.textAreaValue !== undefined) {
       try {
-        const updated = await updatePost(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
+        const updated = await updateContent(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
         if (isError(updated)) {
           this.setState({
             showAlert: updated.message,

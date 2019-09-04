@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Sidebar from 'react-sidebar';
 import Button from 'react-bootstrap/Button';
 
-import { getPostMeta } from '../../backend/contentBackend';
+import { getContentMeta } from '../../backend/contentBackend';
 
 import Routes from '../Routes';
 
@@ -66,8 +66,7 @@ class App extends Component {
   // fetch all of the posts metadata when the component mounts
   async componentDidMount() {
     try {
-      const postMeta = await getPostMeta();
-      this.setState({ postMeta });
+      this.setState({ postMeta: await getContentMeta() });
     } catch (err) {
       console.error('Failed to load post metadata');
     }

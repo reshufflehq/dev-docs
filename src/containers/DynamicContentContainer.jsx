@@ -1,7 +1,7 @@
 import '@binaris/shift-code-transform/macro';
 import React, { Component } from 'react';
 
-import { loadPostByRoute } from '../../backend/contentBackend';
+import { loadContentByRoute } from '../../backend/contentBackend';
 
 import ContentContainer from './ContentContainer';
 
@@ -30,7 +30,7 @@ export default class DynamicContentContainer extends Component {
   async loader(route) {
     if (route) {
       try {
-        const content = await loadPostByRoute(route);
+        const content = await loadContentByRoute(route);
         this.setState({ html: content });
         this.jumpToHash();
       } catch (err) {

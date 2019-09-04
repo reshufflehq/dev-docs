@@ -1,9 +1,9 @@
-import { create, get, update, remove } from '@binaris/shift-db';
-
-import { promisify } from 'util';
-import { cwd } from 'process';
-import { basename, join } from 'path';
-import { readFile } from 'fs';
+import {
+  create,
+  get,
+  remove,
+  update,
+} from '@binaris/shift-db';
 
 import unified from 'unified';
 import parse from 'remark-parse';
@@ -11,7 +11,6 @@ import remark2rehype from 'remark-rehype';
 import stringify from 'rehype-stringify';
 import slug from 'rehype-slug';
 import link from 'rehype-autolink-headings';
-import glob from 'glob';
 import fm from 'front-matter';
 
 import { validateJWT } from './authBackend';
@@ -23,99 +22,96 @@ const processor = unified()
   .use(link)
   .use(stringify);
 
-const globAsync = promisify(glob);
-const readAsync = promisify(readFile);
-const postsDir = 'backend/posts';
+const contentKey = 'content';
 
-/* @expose */
-async function parseInternalMD(markdownContent) {
+// Routes must adhere to a specific format (because
+// they literally are turned into URL paths). No spaces
+// and only lowercase letters.
+//
+// Note: this is not a security check and not foolproof,
+//       only for convenience.
+//
+function cleanRoute(someRoute) {
+  return someRoute.replace(/\s+/g, '-').toLowerCase();
+}
+
+/**
+ * Retrieves all content stored at the user-defined
+ * "contentKey". If no content is found, an empty object
+ * will be created at the "contentKey".
+ */
+async function getContent() {
+  const storedContent = await get(contentKey);
+  if (storedContent === undefined) {
+    // remove first, just in case
+    await remove(contentKey);
+    await create(contentKey, {});
+    return {};
+  }
+  return storedContent;
+}
+
+/**
+ * Given raw markdown, this function does the following
+ *
+ * 1. Extract frontmatter from markdown body
+ * 2. Parse remaining markdown into valid HTML
+ * 3. Return all parsed data + initial raw repr
+ *
+ * @param { string } markdownContent - content to parse
+ *
+ * @return { object } - the parsed markdown, frontmatter and raw
+ */
+async function parseMDLocal(markdownContent) {
   const fmContent = fm(markdownContent);
   const { contents } = await processor.process(fmContent.body);
   fmContent.parsed = contents;
-  return {
-    ...fmContent,
-    raw: markdownContent,
-  };
+  return { ...fmContent, raw: markdownContent };
 }
 
-function cleanRoute(someString) {
-  return someString.replace(/\s+/g, '-').toLowerCase();
-}
-
-async function loadPostsFromFile(existingPosts = {}) {
-  // match all markdown files inside the specified posts
-  // directory, or any of its subdirectories
-  const globPath = join(cwd(), postsDir, '**/*.md');
-  const allFiles = await globAsync(globPath, {});
-  const loadedPosts = { ...existingPosts };
-  // attempt to load all matched paths from the filesystem
-  await Promise.all(allFiles.map(async (filePath) => {
-    // pure filename no extension
-    const rawFileName = basename(filePath, '.md');
-    try {
-      const rawMD = await readAsync(filePath, 'utf8');
-      const parsed = await parseInternalMD(rawMD);
-      let resolvedRoute = cleanRoute(rawFileName);
-      if (parsed.route !== undefined) {
-        resolvedRoute = cleanRoute(parsed.attributes.route);
-      }
-      if (loadedPosts[resolvedRoute] !== undefined) {
-        throw new Error(`Route ${resolvedRoute} already exists`);
-      }
-
-      parsed.route = resolvedRoute;
-      loadedPosts[resolvedRoute] = parsed;
-    } catch (err) {
-      // make sure a broken post doesn't get returned
-      console.error(err);
-    }
-  }));
-  return loadedPosts;
-}
-
-async function getPosts() {
-  const storedPosts = await get('posts');
-  if (storedPosts !== undefined) {
-    return storedPosts;
-  } else {
-    const loaded = await loadPostsFromFile();
-    await remove('posts');
-    await create('posts', loaded);
-    return loaded;
-  }
+/**
+ * Authenticated endpoint which will convert raw markdown
+ * into it's valid HTML repr. Also returns frontmatter
+ * attributes extracted from the original content.
+ *
+ * @param { string } jwt - token used for identification
+ * @param { string } markdownContent - content to parse
+ *
+ * @return { object } - parsed content and attributes
+ */
+/* @expose */
+export async function parseMD(jwt, markdownContent) {
+  await validateJWT(jwt);
+  return parseMDLocal(markdownContent);
 }
 
 /* @expose */
-export async function parseMDPost(jwt, markdownContent) {
+export async function updateContent(jwt, content, prevContent = null) {
   await validateJWT(jwt);
-  return parseInternalMD(markdownContent);
-}
-
-/* @expose */
-export async function updatePost(jwt, postContent, prevContent = null) {
-  await validateJWT(jwt);
-  const parsed = await parseInternalMD(postContent);
+  const parsed = await parseMDLocal(content);
   const route = parsed.attributes.route;
   // for some reason returning errors out of the updater
   // seems to not work as expected
   let potentialError = undefined;
   try {
-    await update('posts', (prevPosts) => {
-      const copied = { ...prevPosts };
+    await update(contentKey, (prevContent) => {
+      const copied = { ...prevContent };
       if (route === undefined) {
         potentialError = {
           type: 'error',
           code: 'CONTENT_MISSING_FIELD',
-          message: `Post: "${postId}" must contain "route:" field in frontmatter`,
+
+          message: `Content: must contain "route" field in frontmatter`,
         };
         throw new Error(potentialError.message);
       }
       const clean = cleanRoute(route);
-      if (prevContent !== null && prevContent !== copied[clean].raw) {
+      if (prevContent !== null &&
+          prevContent !== copied[clean].raw) {
         potentialError = {
           type: 'error',
           code: 'CONTENT_HAS_CHANGED',
-          message: `Post at route: "${clean}" has been modified since reading`,
+          message: `Content at route: "${clean}" has been modified since reading`,
         };
         throw new Error(potentialError.message);
       }
@@ -132,54 +128,53 @@ export async function updatePost(jwt, postContent, prevContent = null) {
 }
 
 /* @expose */
-export async function getRawByRoute(jwt, route) {
+export async function getMDByRoute(jwt, route) {
   await validateJWT(jwt);
-  const loadedPosts = await getPosts();
-  const postKeys = Object.keys(loadedPosts);
-  for (let i = 0; i < postKeys.length; i += 1) {
-    // extract the attributes which are derived from post frontmatter
-    const { attributes } = loadedPosts[postKeys[i]];
+  const loadedContent = await getContent();
+  const contentKeys = Object.keys(loadedContent);
+  for (let i = 0; i < contentKeys.length; i += 1) {
+    // extract the attributes which are derived from content frontmatter
+    const { attributes } = loadedContent[contentKeys[i]];
     if (cleanRoute(attributes.route) === cleanRoute(route)) {
-      return loadedPosts[postKeys[i]];
+      return loadedContent[contentKeys[i]];
     }
   }
-  throw new Error(`No post found with route: ${route}`);
+  throw new Error(`No content found for route: "${route}"`);
 }
 
 /**
- * Load a post from the backend. Case of the title does
+ * Load content from the backend. Case of the title does
  * not matter, as all titles are compared with lowercase.
  *
- * @param { string } title - what the post is named
+ * @param { string } title - what the content is named
  *
- * @return { string } - html representation of the post
+ * @return { string } - html representation of the content
  */
 // @expose
-export async function loadPostByRoute(route) {
-  const loadedPosts = await getPosts();
-  const postKeys = Object.keys(loadedPosts);
-  for (let i = 0; i < postKeys.length; i += 1) {
-    // extract the attributes which are derived from post frontmatter
-    const { attributes } = loadedPosts[postKeys[i]];
+export async function loadContentByRoute(route) {
+  const loadedContent = await getContent();
+  const contentKeys = Object.keys(loadedContent);
+  for (let i = 0; i < contentKeys.length; i += 1) {
+    // extract the attributes which are derived from content frontmatter
+    const { attributes } = loadedContent[contentKeys[i]];
     if (cleanRoute(attributes.route) === cleanRoute(route)) {
-      return loadedPosts[postKeys[i]].parsed;
+      return loadedContent[contentKeys[i]].parsed;
     }
   }
-  throw new Error(`No post found for route: ${route}`);
+  throw new Error(`No content found for route: ${route}`);
 }
 
 /**
- * Returns the metadata of all posts that currently
- * reside in the backend posts directory.
+ * Returns the metadata of all content.
  *
- * @return {object} - metadata of posts
+ * @return {object} - metadata of content
  */
 // @expose
-export async function getPostMeta() {
-  const loadedPosts = await getPosts();
-  const meta = Object.keys(loadedPosts).map((postKey) => {
+export async function getContentMeta() {
+  const loadedContent = await getContent();
+  const meta = Object.keys(loadedContent).map((contentKey) => {
     return {
-      ...loadedPosts[postKey].attributes,
+      ...loadedContent[contentKey].attributes,
     };
   });
   return meta;
