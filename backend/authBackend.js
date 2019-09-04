@@ -9,12 +9,12 @@ import { OAuth2Client } from 'google-auth-library';
 //
 // THE PEM CANNOT BE LEAKED!!!!!!!!!!!!!!
 const {
-  OAUTH_CLIENT_ID,
+  REACT_APP_OAUTH_CLIENT_ID,
   PEM,
-  VALID_HOSTED_DOMAIN,
+  REACT_APP_VALID_HOSTED_DOMAIN,
 } = process.env;
 
-const client = new OAuth2Client(OAUTH_CLIENT_ID);
+const client = new OAuth2Client(REACT_APP_OAUTH_CLIENT_ID);
 
 /**
  * Makes the necessary requests to Google auth servers
@@ -26,7 +26,7 @@ const client = new OAuth2Client(OAUTH_CLIENT_ID);
 async function verifyGoogleUser(token) {
   const ticket = await client.verifyIdToken({
     idToken: token,
-    audience: OAUTH_CLIENT_ID,
+    audience: REACT_APP_OAUTH_CLIENT_ID,
   });
   return ticket.getPayload();
 }
@@ -45,7 +45,7 @@ async function verifyGoogleUser(token) {
 export async function authenticateUser(googleToken) {
   const payload = await verifyGoogleUser(googleToken);
   const { hd } = payload;
-  if (hd === VALID_HOSTED_DOMAIN) {
+  if (hd === REACT_APP_VALID_HOSTED_DOMAIN) {
     // store some basic (unreliable) profile information in the token
     return jwt.sign({
       name: payload.name,

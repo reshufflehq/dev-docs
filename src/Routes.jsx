@@ -4,7 +4,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import AppliedRoute from './components/AppliedRoute';
 import DynamicContentContainer from './containers/DynamicContentContainer';
 import Four0Four from './containers/Four0Four';
-import Auth from './containers/Auth';
 
 function Routes(props) {
   const { childProps } = props;

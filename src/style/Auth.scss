@@ -6,18 +6,10 @@
   align-items: center;
   overflow: scroll;
 
-  &-action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    height: 50%;
-
-    &-button {
-      width: 80%;
-      height: 15%;
-      box-shadow: 1px 1px 1px;
-      border-top: 3px solid rgb(23, 128, 245);
-    }
+  &-button {
+    width: 80%;
+    height: 15%;
+    box-shadow: 1px 1px 1px;
+    border-top: 3px solid rgb(23, 128, 245);
   }
 }

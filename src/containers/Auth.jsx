@@ -1,6 +1,6 @@
 import '@binaris/shift-code-transform/macro';
 
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { GoogleLogin } from 'react-google-login';
@@ -8,67 +8,58 @@ import { authenticateUser } from '../../backend/authBackend';
 
 import '../style/Auth.scss';
 
-const OAUTH_CLIENT_ID = '554280455378-k5n7nkfcla2ti51gi5j5u33chamvf3r9.apps.googleusercontent.com';
+const {
+  REACT_APP_AUTH_NAME,
+  REACT_APP_OAUTH_CLIENT_ID,
+  REACT_APP_VALID_HOSTED_DOMAIN,
+} = process.env;
 
+/**
+ * Attempt to authenticate with the backend by providing
+ * it the google token returned by the clientside auth
+ */
 async function onSuccess({ tokenId }, storeUserToken) {
   try {
     const authToken = await authenticateUser(tokenId);
     // store the JWT
     storeUserToken(authToken);
   } catch (err) {
-    console.error('Error encountered while authenticating');
     console.error(err);
   }
 }
 
-async function onFailure(err) {
-  console.log('failed');
-  console.log(err);
-}
-
-
-export default class Auth extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { storeUserToken, userToken } = this.props;
-    if (OAUTH_CLIENT_ID === undefined ) {
-      return (
-        <div>
-          <span>
-            No OAUTH ID configured!
-          </span>
-        </div>
-      );
-    }
-    if (userToken !== undefined) {
-      return (
-        <Redirect to='/admin'/>
-      );
-    }
-
+export default ({ storeUserToken, userToken }) => {
+  if (REACT_APP_OAUTH_CLIENT_ID === undefined ) {
+    // Google OAuth flow requires OAUTH ID
+    // Read more here: https://developers.google.com/identity/protocols/OAuth2
     return (
-      <div className='auth'>
-        <div className='auth-action'>
-          <GoogleLogin
-              clientId={'554280455378-k5n7nkfcla2ti51gi5j5u33chamvf3r9.apps.googleusercontent.com'}
-              buttonText='Login'
-              onSuccess={(response) => onSuccess(response, storeUserToken)}
-              onFailure={onFailure}
-              hostedDomain='shiftjs.com'
-              render={renderProps => (
-                <button onClick={renderProps.onClick}
-                        disabled={renderProps.disabled}
-                        className='auth-action-button'
-                >
-                  Click here to authenticate with ShiftJS
-                </button>
-              )}
-          />
-        </div>
+      <div>
+        <span>
+          No OAUTH ID configured!
+        </span>
       </div>
     );
+  } else if (userToken !== undefined) {
+    // if the user token exists, take user to Admin page
+    return (<Redirect to='/admin'/>);
   }
+
+  return (
+    <div className='auth'>
+      <GoogleLogin
+          clientId={REACT_APP_OAUTH_CLIENT_ID}
+          buttonText='Login'
+          onSuccess={(response) => onSuccess(response, storeUserToken)}
+          hostedDomain={REACT_APP_VALID_HOSTED_DOMAIN}
+          render={renderProps => (
+            <button onClick={renderProps.onClick}
+                    disabled={renderProps.disabled}
+                    className='auth-button'
+            >
+              {`Click here to authenticate with ${REACT_APP_AUTH_NAME}`}
+            </button>
+          )}
+      />
+    </div>
+  );
 }
