@@ -96,20 +96,39 @@ export async function updatePost(jwt, postContent, prevContent = null) {
   await validateJWT(jwt);
   const parsed = await parseInternalMD(postContent);
   const route = parsed.attributes.route;
-  await update('posts', (prevPosts) => {
-    const copied = { ...prevPosts };
-    if (route === undefined) {
-      throw new Error(`Post ${postId} must contain "route:" field in frontmatter`);
-    }
-    const clean = cleanRoute(route);
-    if (prevContent !== null && prevContent !== copied[clean].raw) {
-      console.log(prevContent);
-      console.log(copied[clean]);
-      throw new Error(`Post at route: ${clean} has been modified since reading`);
-    }
-    copied[clean] = parsed;
-    return copied;
-  });
+  // for some reason returning errors out of the updater
+  // seems to not work as expected
+  let potentialError = undefined;
+  try {
+    await update('posts', (prevPosts) => {
+      const copied = { ...prevPosts };
+      if (route === undefined) {
+        potentialError = {
+          type: 'error',
+          code: 'CONTENT_MISSING_FIELD',
+          message: `Post: "${postId}" must contain "route:" field in frontmatter`,
+        };
+        throw new Error(potentialError.message);
+      }
+      const clean = cleanRoute(route);
+      if (prevContent !== null && prevContent !== copied[clean].raw) {
+        potentialError = {
+          type: 'error',
+          code: 'CONTENT_HAS_CHANGED',
+          message: `Post at route: "${clean}" has been modified since reading`,
+        };
+        throw new Error(potentialError.message);
+      }
+      copied[clean] = parsed;
+      return copied;
+    });
+  } catch (err) {
+    return potentialError || {
+      type: 'error',
+      code: 'UNKNOWN_ERROR',
+      message: err.message,
+    };
+  }
 }
 
 /* @expose */

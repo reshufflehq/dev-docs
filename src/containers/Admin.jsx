@@ -1,14 +1,11 @@
 import '@binaris/shift-code-transform/macro';
 import React, { Component } from 'react';
 
-import ReactDOMServer from 'react-dom/server';
-import * as hm from 'html-to-react'
-
+import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import ClipLoader from 'react-spinners/ClipLoader';
 
 import { css } from '@emotion/core';
 
@@ -19,12 +16,11 @@ import {
   getRawByRoute,
 } from '../../backend/contentBackend.js';
 
+import { isError } from '../backendHelpers.js';
+
 import ContentContainer from './ContentContainer';
 
 import '../style/Admin.scss';
-
-const HtmlToReactParser = hm.Parser;
-const htmlToReactParser = new HtmlToReactParser();
 
 const override = css`
 z-index: 10001;
@@ -68,6 +64,8 @@ export default class Admin extends Component {
       formValidated: false,
       textAreaValue: '',
       startingTextState: undefined,
+      showAlert: undefined,
+      alertVariant: undefined,
     };
     this.backgroundLoadPosts();
   }
@@ -76,7 +74,7 @@ export default class Admin extends Component {
     try {
       const res = await getRawByRoute(this.props.userToken, route);
       this.setState({
-        html: htmlToReactParser.parse(res.parsed),
+        html: res.parsed,
         startingTextState: res.raw,
         textAreaValue: res.raw,
       });
@@ -102,7 +100,7 @@ export default class Admin extends Component {
   async updateDisplay(rawContent) {
     try {
       const parsed = await parseMDPost(this.props.userToken, rawContent);
-      this.setState({ html: htmlToReactParser.parse(parsed.parsed) });
+      this.setState({ html: parsed.parsed });
     } catch (err) {
       console.error(err);
     }
@@ -117,9 +115,28 @@ export default class Admin extends Component {
 
   handleSubmitPost = async (event) => {
     event.preventDefault();
-    if (this.state.textAreaValue !== '' && this.state.textAreaValue !== undefined) {
-      const updated = await updatePost(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
-      console.log('updated!');
+    if (this.state.textAreaValue !== '' &&
+        this.state.textAreaValue !== undefined) {
+      try {
+        const updated = await updatePost(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
+        if (isError(updated)) {
+          this.setState({
+            showAlert: updated.message,
+            alertVariant: 'danger',
+          });
+        } else {
+          this.setState({
+            startingTextState: this.state.textAreaValue,
+            showAlert: 'Post successfully updated!',
+            alertVariant: 'info',
+          });
+        }
+      } catch (err) {
+        this.setState({
+          showAlert: 'Something went wrong, sorry about that',
+          alertVariant: 'danger',
+        });
+      }
     }
   }
 
@@ -131,28 +148,43 @@ export default class Admin extends Component {
                         onSelect={this.onPostSelected}
           />
           <div className='admin-config-submit'>
-            <Button variant='primary' onClick={this.handleSubmitPost}>
-              Submit
+            <Button variant='primary'
+                    onClick={this.handleSubmitPost}
+            >
+              Update
             </Button>
           </div>
+          {
+            this.state.showAlert && (
+              <div className='admin-config-alert'>
+                <Alert variant={this.state.alertVariant}
+                       onClose={
+                         () => this.setState({
+                           showAlert: undefined, alertVariant: undefined
+                         })
+                       }
+                       dismissible
+                >
+                  <Alert.Heading>{this.state.showAlert}</Alert.Heading>
+                </Alert>
+              </div>
+            )
+          }
         </div>
         <div className='admin-display'>
-          <ContentContainer className='admin-display-container'
-                            history={this.props.history}
-                            ele={this.state.html}
-                            html={null}
+          <ContentContainer html={this.state.html}
           />
         </div>
-        <div className='admin-action'>
+        <div className='admin-form-wrapper'>
           <div className='admin-form'>
             <Form noValidate
                   validated={this.state.formValidated}
-                  id='post-update-form'
+                  id='admin-update-form'
             >
-              <Form.Group controlId="form.textinput">
-                <Form.Label>Content</Form.Label>
-                <Form.Control as="textarea"
-                              rows="20"
+              <Form.Group controlId='form.textinput'>
+                <Form.Label>Post Content (markdown format)</Form.Label>
+                <Form.Control as='textarea'
+                              rows='20'
                               onChange={this.onTextAreaChange}
                               value={this.state.textAreaValue}
                               required
@@ -165,26 +197,3 @@ export default class Admin extends Component {
     );
   }
 }
-  // onFilenameChange = (event) => {
-  //   event.preventDefault();
-  //   const fieldVal = event.target.value;
-  //   this.setState({ fileNameValue: fieldVal });
-  // }
-
-              {/* <div className='post-form-submission'> */}
-              {/*   <Button type='submit'> */}
-              {/*     text */}
-              {/*   </Button> */}
-              {/* </div> */}
-              {/* <Form.Group controlId='form.filename'> */}
-              {/*   <Form.Label className='auth-form-filename'> */}
-              {/*     Filename */}
-              {/*   </Form.Label> */}
-              {/*   <Form.Control onChange={this.onFilenameChange} */}
-              {/*                 value={this.state.fileNameValue} */}
-              {/*                 disabled={false} */}
-              {/*                 type='text' */}
-              {/*                 placeholder='A post about ReactJS hooks' */}
-              {/*                 required */}
-              {/*   /> */}
-              {/* </Form.Group> */}

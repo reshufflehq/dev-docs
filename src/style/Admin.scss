@@ -1,60 +1,61 @@
 .admin {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  height: 100vh;
+  /* no silly horizontal scroll */
+  overflow-x: hidden;
 
   &-config {
+    position: relative;
     width: 100%;
-    height: 10%;
+    min-height: 100px;
+    max-height: 100px;
+
     margin-left: 10%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+
     display: flex;
     align-items: center;
-    justify-content: left;
-    flex-direction: row;
+    flex-wrap: wrap;
 
+    /* keep the submit button off of other content */
     &-submit {
       margin-left: 2%;
+      margin-right: 2%;
+    }
+
+    &-alert {
+      overflow: hidden;
+      position: absolute;
+      padding-top: 1%;
+      width: 80%;
+      height: 100%;
+      z-index: 10000;
     }
   }
 
   &-display {
-    margin: 0 auto;
+    position: relative;
     width: 80%;
     height: 30%;
-    margin-left: 10%;
-    margin-right: 10%;
-    max-height: 400px;
     min-height: 400px;
-    overflow: scroll;
-    border: 1px solid black;
-  }
+    max-height: 400px;
 
-  &-action {
-    width: 100%;
-    height: 50%;
-    padding-top: 1%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
+
+    border: 1px solid black;
+    /* match Bootstrap border radius for text-input */
+    border-radius: 4px;
+    overflow: scroll;
   }
 
   &-form {
     width: 80%;
     height: 90%;
-    margin-bottom: 10%;
-  }
-}
+    margin: 0 auto;
 
-.admin-display-container {
-  background-color: white;
-  // border: 1px solid black;
-  margin-left: 0px;
-  margin-right: 0px;
-  width: 100%;
-  padding: 1%;
-  height: 30%;
+    /* rest of view height should be for input display */
+    &-wrapper {
+      height: calc(100% - 30% - 100px);
+      padding-top: 2%;
+    }
+  }
 }
