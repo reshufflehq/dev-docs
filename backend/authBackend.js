@@ -10,7 +10,12 @@ import { OAuth2Client } from 'google-auth-library';
 // PEM which is used to sign our tokens
 //
 // THE PEM CANNOT BE LEAKED!!!!!!!!!!!!!!
-const { OAUTH_CLIENT_ID, PEM } = process.env;
+const {
+  OAUTH_CLIENT_ID,
+  PEM,
+  VALID_HOSTED_DOMAIN,
+} = process.env;
+
 const client = new OAuth2Client(OAUTH_CLIENT_ID);
 
 /**
@@ -38,13 +43,13 @@ async function verifyGoogleUser(token) {
  *
  * @param { string } googleToken - googleToken returned by clientside auth
  *
- * @return { string } - site-specific JWT that allows future access
+ * @return { string } - site-wide JWT that allows future access
  */
 /* @expose */
 export async function authenticateUser(googleToken) {
   const payload = await verifyGoogleID(googleToken);
   const { hd } = payload;
-  if (hd === 'shiftjs.com') {
+  if (hd === VALID_HOSTED_DOMAIN) {
     // store some basic (unreliable) profile information in the token
     return jwt.sign({
       name: payload.name,
