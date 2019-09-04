@@ -3,8 +3,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 
 import PrivateRoute from './components/PrivateRoute';
 
-import './style/App.scss';
-
 import DevSite from './containers/DevSite';
 import Auth from './containers/Auth';
 import Admin from './containers/Admin';

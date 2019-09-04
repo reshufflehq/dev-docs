@@ -52,7 +52,7 @@ const sidebarCategories = [
 // define a media query for views that are at least 800px
 const mql = window.matchMedia(`(min-width: 800px)`);
 
-class App extends Component {
+class Devsite extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -153,4 +153,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(Devsite);
