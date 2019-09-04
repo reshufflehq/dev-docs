@@ -1,4 +1,4 @@
-import { create, get } from '@binaris/shift-db';
+import { create, get, update, remove } from '@binaris/shift-db';
 
 import { promisify } from 'util';
 import { cwd } from 'process';
@@ -14,6 +14,8 @@ import link from 'rehype-autolink-headings';
 import glob from 'glob';
 import fm from 'front-matter';
 
+import { validateJWT } from './authBackend';
+
 const processor = unified()
   .use(parse)
   .use(remark2rehype)
@@ -23,28 +25,48 @@ const processor = unified()
 
 const globAsync = promisify(glob);
 const readAsync = promisify(readFile);
-
 const postsDir = 'backend/posts';
 
-async function loadAllPosts() {
+/* @expose */
+async function parseInternalMD(markdownContent) {
+  const fmContent = fm(markdownContent);
+  const { contents } = await processor.process(fmContent.body);
+  fmContent.parsed = contents;
+  return {
+    ...fmContent,
+    raw: markdownContent,
+  };
+}
+
+function cleanRoute(someString) {
+  return someString.replace(/\s+/g, '-').toLowerCase();
+}
+
+async function loadPostsFromFile(existingPosts = {}) {
   // match all markdown files inside the specified posts
   // directory, or any of its subdirectories
   const globPath = join(cwd(), postsDir, '**/*.md');
   const allFiles = await globAsync(globPath, {});
-  const loadedPosts = {};
+  const loadedPosts = { ...existingPosts };
   // attempt to load all matched paths from the filesystem
   await Promise.all(allFiles.map(async (filePath) => {
     // pure filename no extension
     const rawFileName = basename(filePath, '.md');
     try {
       const rawMD = await readAsync(filePath, 'utf8');
-      // just add the frontmatter
-      loadedPosts[rawFileName] = fm(rawMD);
-      const { contents } = await processor.process(loadedPosts[rawFileName].body);
-      loadedPosts[rawFileName].parsed = contents;
+      const parsed = await parseInternalMD(rawMD);
+      let resolvedRoute = cleanRoute(rawFileName);
+      if (parsed.route !== undefined) {
+        resolvedRoute = cleanRoute(parsed.attributes.route);
+      }
+      if (loadedPosts[resolvedRoute] !== undefined) {
+        throw new Error(`Route ${resolvedRoute} already exists`);
+      }
+
+      parsed.route = resolvedRoute;
+      loadedPosts[resolvedRoute] = parsed;
     } catch (err) {
       // make sure a broken post doesn't get returned
-      delete loadedPosts[rawFileName];
       console.error(err);
     }
   }));
@@ -52,11 +74,57 @@ async function loadAllPosts() {
 }
 
 async function getPosts() {
-  const loaded = await loadAllPosts();
-  // once the DB is more flexible we can actually rely on
-  // it for retrieving the post contents
-  create('posts', loaded);
-  return loaded;
+  const storedPosts = await get('posts');
+  if (storedPosts !== undefined) {
+    return storedPosts;
+  } else {
+    const loaded = await loadPostsFromFile();
+    await remove('posts');
+    await create('posts', loaded);
+    return loaded;
+  }
+}
+
+/* @expose */
+export async function parseMDPost(jwt, markdownContent) {
+  await validateJWT(jwt);
+  return parseInternalMD(markdownContent);
+}
+
+/* @expose */
+export async function updatePost(jwt, postContent, prevContent = null) {
+  await validateJWT(jwt);
+  const parsed = await parseInternalMD(postContent);
+  const route = parsed.attributes.route;
+  await update('posts', (prevPosts) => {
+    const copied = { ...prevPosts };
+    if (route === undefined) {
+      throw new Error(`Post ${postId} must contain "route:" field in frontmatter`);
+    }
+    const clean = cleanRoute(route);
+    if (prevContent !== null && prevContent !== copied[clean].raw) {
+      console.log(prevContent);
+      console.log(copied[clean]);
+      throw new Error(`Post at route: ${clean} has been modified since reading`);
+    }
+    copied[clean] = parsed;
+    return copied;
+  });
+}
+
+/* @expose */
+export async function getRawByRoute(jwt, route) {
+  await validateJWT(jwt);
+  const loadedPosts = await getPosts();
+  const postKeys = Object.keys(loadedPosts);
+  for (let i = 0; i < postKeys.length; i += 1) {
+    // extract the attributes which are derived from post frontmatter
+    const { attributes } = loadedPosts[postKeys[i]];
+    if (cleanRoute(attributes.route) === cleanRoute(route)) {
+      return loadedPosts[postKeys[i]];
+    }
+  }
+  throw new Error(`No post found with route: ${route}`);
 }
 
 /**
@@ -68,17 +136,17 @@ async function getPosts() {
  * @return { string } - html representation of the post
  */
 // @expose
-export async function loadPostByTitle(title) {
+export async function loadPostByRoute(route) {
   const loadedPosts = await getPosts();
   const postKeys = Object.keys(loadedPosts);
   for (let i = 0; i < postKeys.length; i += 1) {
     // extract the attributes which are derived from post frontmatter
     const { attributes } = loadedPosts[postKeys[i]];
-    if (attributes.title.toLowerCase() === title.toLowerCase()) {
+    if (cleanRoute(attributes.route) === cleanRoute(route)) {
       return loadedPosts[postKeys[i]].parsed;
     }
   }
-  throw new Error(`No post found with title: ${title}`);
+  throw new Error(`No post found for route: ${route}`);
 }
 
 /**
@@ -93,7 +161,6 @@ export async function getPostMeta() {
   const meta = Object.keys(loadedPosts).map((postKey) => {
     return {
       ...loadedPosts[postKey].attributes,
-      fileName: postKey,
     };
   });
   return meta;

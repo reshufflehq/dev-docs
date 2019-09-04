@@ -1,5 +1,6 @@
 ---
 title: Hello World
+route: hello-world
 description: 'The hello world program'
 category: 'Main Concepts'
 priority: 0

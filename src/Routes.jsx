@@ -2,8 +2,9 @@ import React from 'react';
 
 import { Route, Switch, withRouter } from 'react-router-dom';
 import AppliedRoute from './components/AppliedRoute';
-import ContentContainer from './containers/ContentContainer';
+import DynamicContentContainer from './containers/DynamicContentContainer';
 import Four0Four from './containers/Four0Four';
+import Auth from './containers/Auth';
 
 function Routes(props) {
   const { childProps } = props;
@@ -12,10 +13,10 @@ function Routes(props) {
   // create a route for every markdown page that
   // is provided by the backend
   const routes = childProps.pages.map((meta) => {
-    const { fileName, isDefault } = meta;
+    const { route, isDefault } = meta;
 
     // always use the filename as the main route path
-    const routePaths = [`/${fileName}`];
+    const routePaths = [`/${route}`];
     if (isDefault === true) {
       // only allow 1 default page
       if (defaultFound === true) {
@@ -24,9 +25,9 @@ function Routes(props) {
       defaultFound = true;
       routePaths.push(...['/', 'home', '/home']);
     }
-    return <AppliedRoute key={fileName}
+    return <AppliedRoute key={route}
                          exact path={routePaths}
-                         component={ContentContainer}
+                         component={DynamicContentContainer}
                          props={{meta}}
            />
 

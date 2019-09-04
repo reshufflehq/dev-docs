@@ -18,21 +18,21 @@ function Category({ category, pages, handleLinkSelected }) {
       if (a.priority > b.priority) return 1;
       return 0;
     });
-    return prioritized.map(({ fileName, title, numbered }, i) => {
+    return prioritized.map(({ route, title, numbered }, i) => {
       // if the page is numbered, use the current map index
       const preText = numbered ? `${i + 1}.` : '';
       return (
-        <div key={fileName}
+        <div key={route}
              className='sidebar-category-subitem'
         >
-          <Link key={fileName}
+          <Link key={route}
                 onClick={handleLinkSelected}
                 style={{
                   textDecoration: 'none',
                   color: 'black',
                   outline: 'none'
                 }}
-                to={fileName}
+                to={route}
           >
             {preText} {title}
           </Link>

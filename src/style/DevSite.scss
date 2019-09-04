@@ -1,0 +1,37 @@
+.root-container {
+  width: 100%;
+  height: 100vh;
+
+  // this does eliminate some small mobile devices
+  min-width: 300px; 
+  font-family: Avenir;
+  overflow: hidden;
+}
+
+// defines the height of our nav
+.nav-shaper {
+  height: 75px;
+}
+
+.root-content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mobile-button {
+  // button position shouldn't be derived from anything
+  position: fixed;
+  // make sure the button is always on top
+  z-index: 10000;  
+  bottom: 0;
+  right: 0;
+  margin-right: 10%;
+  margin-bottom: 10%;
+}
+
+@media only screen and (min-width: 800px) {
+  .mobile-button {
+    display: none;
+  }
+}
