@@ -20,24 +20,25 @@ import ContentContainer from './ContentContainer';
 
 import '../style/Admin.scss';
 
+/**
+ * Basic dropdown displaying existing content of site
+ */
 function PostDropdown ({ items, onSelect }) {
   return (
-    <DropdownButton id='dropdown-item-button'
-                    title='Select a Post'
-    >
+    <DropdownButton title='Select a Post'>
       {
-        items.map((item) => {
-          return (
+        items.map((item) =>
+          (
             <Dropdown.Item id={item.route}
                            key={item.route}
-                           eventKey={JSON.stringify(item)}
+                           eventKey={item.route}
                            as='button'
                            onSelect={onSelect}
             >
               {item.route}
             </Dropdown.Item>
-          );
-        })
+          )
+        )
       }
     </DropdownButton>
   );
@@ -55,7 +56,8 @@ export default class Admin extends Component {
       showAlert: undefined,
       alertVariant: undefined,
     };
-    this.backgroundLoadPosts();
+    // immediately start trying to load metadata
+    this.backgroundLoadMeta();
   }
 
   setPost = async (route) =>{
@@ -71,29 +73,32 @@ export default class Admin extends Component {
     }
   }
 
-  onPostSelected = async (event, e0) => {
-    try {
-      const parsed = JSON.parse(event);
-      await this.setPost(parsed.route);
-    } catch (err) {
-      console.log(err);
-    }
+  onPostSelected = async (event) => {
+    await this.setPost(event);
   }
 
-  async backgroundLoadPosts() {
-    const meta = await getContentMeta();
-    this.setState({ dropdownItems: meta });
+  async backgroundLoadMeta() {
+    this.setState({ dropdownItems: await getContentMeta() });
   }
 
+  /**
+   * Updates the preview display to reflect the parsed
+   * state of the provided raw-markdown
+   */
   async updateDisplay(rawContent) {
     try {
       const parsed = await parseMD(this.props.userToken, rawContent);
       this.setState({ html: parsed.parsed });
     } catch (err) {
+      // TODO: Handle this with future error handling system
       console.error(err);
     }
   }
 
+  /**
+   * Whenever the input text area changes, re-draw the
+   * display to reflect the new content
+   */
   onTextAreaChange = (event) => {
     event.preventDefault();
     const fieldVal = event.target.value;
@@ -103,10 +108,13 @@ export default class Admin extends Component {
 
   handleSubmitPost = async (event) => {
     event.preventDefault();
+    // ensure there is content to submit
     if (this.state.textAreaValue !== '' &&
         this.state.textAreaValue !== undefined) {
       try {
         const updated = await updateContent(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
+        // manual error handling is required because of
+        // some current idiosyncrasies
         if (isError(updated)) {
           this.setState({
             showAlert: updated.message,
@@ -160,8 +168,7 @@ export default class Admin extends Component {
           }
         </div>
         <div className='admin-display'>
-          <ContentContainer html={this.state.html}
-          />
+          <ContentContainer html={this.state.html} />
         </div>
         <div className='admin-form-wrapper'>
           <div className='admin-form'>
