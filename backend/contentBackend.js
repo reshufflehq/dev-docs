@@ -124,10 +124,11 @@ export async function getContentByRoute(jwt, route) {
   await validateJWT(jwt);
   const loadedContent = await getContent();
   const contentKeys = Object.keys(loadedContent);
+  const cleaned = cleanRoute(route);
   for (let i = 0; i < contentKeys.length; i += 1) {
     // extract the attributes which are derived from content frontmatter
     const { attributes } = loadedContent[contentKeys[i]];
-    if (cleanRoute(attributes.route) === cleanRoute(route)) {
+    if (cleanRoute(attributes.route) === cleaned) {
       return loadedContent[contentKeys[i]];
     }
   }
@@ -146,10 +147,11 @@ export async function getContentByRoute(jwt, route) {
 export async function loadContentByRoute(route) {
   const loadedContent = await getContent();
   const contentKeys = Object.keys(loadedContent);
+  const cleaned = cleanRoute(route);
   for (let i = 0; i < contentKeys.length; i += 1) {
     // extract the attributes which are derived from content frontmatter
     const { attributes } = loadedContent[contentKeys[i]];
-    if (cleanRoute(attributes.route) === cleanRoute(route)) {
+    if (cleanRoute(attributes.route) === cleaned) {
       return loadedContent[contentKeys[i]].parsed;
     }
   }
