@@ -14,9 +14,9 @@ function Routes(props) {
   const routes = childProps.pages.map((meta) => {
     const { route, isDefault } = meta;
     const routePaths = [`/${route}`];
-    if (isDefault === true) {
+    if (isDefault) {
       // only allow 1 default page
-      if (defaultFound === true) {
+      if (defaultFound) {
         throw new Error('Maximum of 1 default page allowed');
       }
       defaultFound = true;
