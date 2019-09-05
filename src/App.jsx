@@ -17,17 +17,14 @@ class App extends Component {
     // try and retrieve a previously stored user token
     // which will allow the client to visit protected
     // routes
-    let userToken;
     try {
-      userToken = localStorage.getItem('userToken');
-      if (userToken === null) {
-        userToken = undefined;
+      const userToken = localStorage.getItem('userToken');
+      if (userToken !== null) {
+        this.setState({ userToken });
       }
     } catch (err) {
-      // this is not actually an error
       console.error(err);
     }
-    this.setState({ userToken });
   }
 
   /**
