@@ -20,7 +20,7 @@ function Routes(props) {
         throw new Error('Maximum of 1 default page allowed');
       }
       defaultFound = true;
-      routePaths.push(...['/', 'home', '/home']);
+      routePaths.push('/', 'home', '/home');
     }
     return <AppliedRoute key={route}
                          exact path={routePaths}
