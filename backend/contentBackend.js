@@ -135,10 +135,10 @@ export async function getContentByRoute(jwt, route) {
 }
 
 /**
- * Load content from the backend. Case of the title does
- * not matter, as all titles are compared with lowercase.
+ * Load content from the backend. Case of the route does
+ * not matter, as all routes are compared with lowercase.
  *
- * @param { string } title - what the content is named
+ * @param { string } routes - what the content is named
  *
  * @return { string } - html representation of the content
  */
