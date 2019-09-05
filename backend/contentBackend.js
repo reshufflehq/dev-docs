@@ -51,6 +51,16 @@ async function getContent() {
  * 2. Parse remaining markdown into valid HTML
  * 3. Return all parsed data + initial raw repr
  *
+ * The format of the returned object:
+ *
+ * {
+ *   attributes: [key: string]: string; // K/V of extracted frontmatter attributes
+ *   body: string; // everything but fronmatter from the original doc
+ *   frontmatter: string; // unparsed frontmatter repr from doc
+ *   parsed: string; // html repr of the input markdown content
+ *   raw: string; // input markdown
+ * }
+ *
  * @param { string } markdownContent - content to parse
  *
  * @return { object } - the parsed markdown, frontmatter and raw
