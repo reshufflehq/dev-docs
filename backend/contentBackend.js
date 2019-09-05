@@ -67,7 +67,7 @@ async function parseMDLocal(markdownContent) {
 }
 
 /**
- * Authenticated endpoint which will convert raw markdown
+ * Authenticated route which will convert raw markdown
  * into it's valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
  *
