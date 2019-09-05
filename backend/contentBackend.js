@@ -41,14 +41,7 @@ function cleanRoute(someRoute) {
  * will be created at the "contentKey".
  */
 async function getContent() {
-  const storedContent = await get(contentKey);
-  if (storedContent === undefined) {
-    // remove first, just in case
-    await remove(contentKey);
-    await create(contentKey, {});
-    return {};
-  }
-  return storedContent;
+  return await get(contentKey) || {};
 }
 
 /**
@@ -108,40 +101,43 @@ export async function updateContent(jwt, content, clientPrevContent = null) {
   // parse the client provided markdown to extract
   // the route attribute
   const parsed = await parseMDLocal(content);
-  const route = parsed.attributes.route;
+  // content must have a route
+  if (parsed.attributes.route === undefined) {
+    return {
+      type: 'error',
+      code: 'CONTENT_MISSING_FIELD',
+
+      message: `Content: must contain "route" field in frontmatter`,
+    };
+  }
+  const route = cleanRoute(parsed.attributes.route);
   // for some reason returning errors out of the updater
   // seems to not work as expected
   let potentialError = undefined;
   try {
     await update(contentKey, (prevContent) => {
-      const copied = { ...prevContent };
-      // content must have a route
-      if (route === undefined) {
-        potentialError = {
-          type: 'error',
-          code: 'CONTENT_MISSING_FIELD',
-
-          message: `Content: must contain "route" field in frontmatter`,
-        };
-        throw new Error(potentialError.message);
-      }
+      // start with an empty object if no value
+      // already exists at the key
+      const copied = { ...(prevContent || {}) };
       // routes are forced into valid shape
-      const clean = cleanRoute(route);
       // this makes it hard to accidentally overwrite content
       if (clientPrevContent !== null &&
-          clientPrevContent !== copied[clean].raw) {
+          clientPrevContent !== copied[route].raw) {
         potentialError = {
           type: 'error',
           code: 'CONTENT_HAS_CHANGED',
-          message: `Content at route: "${clean}" has been modified since reading`,
+          message: `Content at route: "${route}" has been modified since reading`,
         };
         throw new Error(potentialError.message);
       }
-      copied[clean] = parsed;
-      return copied;
+      return {
+        ...copied,
+        route: parsed,
+      };
     });
   } catch (err) {
-    // "err" object here is borked, need to rely on manual error
+    // "err" object is currently wrapped by backend,
+    // this makes it very hard to use
     return potentialError || {
       type: 'error',
       code: 'UNKNOWN_ERROR',
