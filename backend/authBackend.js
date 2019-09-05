@@ -5,12 +5,12 @@ import * as jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 
 // we depend on both OAUTH_CLIENT_ID and a SECURE
-// PEM which is used to sign our tokens
+// HMAC which is used to sign our tokens
 //
-// THE PEM CANNOT BE LEAKED!!!!!!!!!!!!!!
+// THE HMAC CANNOT BE LEAKED!!!!!!!!!!!!!!
 const {
   REACT_APP_OAUTH_CLIENT_ID,
-  PEM,
+  HMAC,
   REACT_APP_VALID_HOSTED_DOMAIN,
 } = process.env;
 
@@ -51,16 +51,16 @@ export async function authenticateUser(googleToken) {
       name: payload.name,
       picture: payload.picture,
       email: payload.email,
-    }, PEM);
+    }, HMAC);
   } else {
     // TODO: Format error to meet specification defined in contentBackend
     throw new Error(`User cannot be authenticated, ${hd} is not a valid host domain`);
   }
 }
 
-// validates a JWT by decoding it with the PEM secret
+// validates a JWT by decoding it with the HMAC secret
 export async function validateJWT(token) {
   // this will throw if verification fails
-  jwt.verify(token, PEM);
+  jwt.verify(token, HMAC);
   return true;
 }

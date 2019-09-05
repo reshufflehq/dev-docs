@@ -3,9 +3,12 @@ Dev docs site of Reshuffle. Uses remark, rehype and prismjs to render markdown w
 Content management is possible using hidden `'/admin'` route. To use this route, the following env vars need to exist on deploy
 
 ```
-PEM= // !!!SECRET BACKEND ONLY!!! should be unique and secure, used to sign JWT
+HMAC= // !!!SECRET BACKEND ONLY!!! should be unique and secure, used to sign JWT. The HMAC is used for asymmetric encryption of tokens, if it is leaked, your app is insecure.
+
 REACT_APP_VALID_HOSTED_DOMAIN= // email address domain allowed for admins
+
 REACT_APP_OAUTH_CLIENT_ID= // https://developers.google.com/identity/protocols/OAuth2
+
 REACT_APP_AUTH_NAME= // what is the name to display when asking for auth
 ```
 
