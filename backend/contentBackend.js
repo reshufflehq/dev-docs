@@ -3,12 +3,14 @@ import {
   get,
   remove,
   update,
+  Q,
+  find,
 } from '@binaris/shift-db';
 
 import { validateJWT } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
-const contentKey = 'content';
+const contentPrefix = 'content__';
 
 // Routes must adhere to a specific format (because
 // they literally are turned into URL paths). No spaces
@@ -19,15 +21,6 @@ const contentKey = 'content';
 //
 function cleanRoute(someRoute) {
   return someRoute.replace(/\s+/g, '-').toLowerCase();
-}
-
-/**
- * Retrieves all content stored at the user-defined
- * "contentKey". If no content is found, an empty object
- * will be created at the "contentKey".
- */
-async function getContent() {
-  return await get(contentKey) || {};
 }
 
 /**
@@ -75,29 +68,28 @@ export async function updateContent(jwt, content, clientPrevContent = null) {
     };
   }
   const route = cleanRoute(parsed.attributes.route);
-  // for some reason returning errors out of the updater
-  // seems to not work as expected
+
   let potentialError = undefined;
   try {
-    await update(contentKey, (prevContent) => {
-      // start with an empty object if no value
-      // already exists at the key
-      const copied = { ...(prevContent || {}) };
-      // routes are forced into valid shape
-      // this makes it hard to accidentally overwrite content
-      if (clientPrevContent !== null &&
-          clientPrevContent !== copied[route].raw) {
-        potentialError = {
-          type: 'error',
-          code: 'CONTENT_HAS_CHANGED',
-          message: `Content at route: "${route}" has been modified since reading`,
+    await update(`content__${route}`, (prevContent) => {
+      if (prevContent) {
+        const copied = { ...prevContent };
+        if (clientPrevContent !== null &&
+            clientPrevContent !== copied.raw) {
+          potentialError = {
+            type: 'error',
+            code: 'CONTENT_HAS_CHANGED',
+            message: `Content at route: "${route}" has been modified since reading`,
+          };
+          throw new Error(potentialError.message);
+        }
+        return {
+          ...copied,
+          ...parsed,
         };
-        throw new Error(potentialError.message);
+      } else {
+        return parsed;
       }
-      return {
-        ...copied,
-        route: parsed,
-      };
     });
   } catch (err) {
     // "err" object is currently wrapped by backend,
@@ -108,6 +100,14 @@ export async function updateContent(jwt, content, clientPrevContent = null) {
       message: err.message,
     };
   }
+}
+
+async function contentByRoute(route) {
+  const content = await get(`${contentPrefix}${cleanRoute(route)}`);
+  if (content === undefined) {
+    throw new Error(`No content found for route: ${route}`);
+  }
+  return content;
 }
 
 /**
@@ -122,17 +122,7 @@ export async function updateContent(jwt, content, clientPrevContent = null) {
 /* @expose */
 export async function getContentByRoute(jwt, route) {
   await validateJWT(jwt);
-  const loadedContent = await getContent();
-  const contentKeys = Object.keys(loadedContent);
-  const cleaned = cleanRoute(route);
-  for (let i = 0; i < contentKeys.length; i += 1) {
-    // extract the attributes which are derived from content frontmatter
-    const { attributes } = loadedContent[contentKeys[i]];
-    if (cleanRoute(attributes.route) === cleaned) {
-      return loadedContent[contentKeys[i]];
-    }
-  }
-  throw new Error(`No content found for route: "${route}"`);
+  return await contentByRoute(route);
 }
 
 /**
@@ -145,17 +135,8 @@ export async function getContentByRoute(jwt, route) {
  */
 // @expose
 export async function loadContentByRoute(route) {
-  const loadedContent = await getContent();
-  const contentKeys = Object.keys(loadedContent);
-  const cleaned = cleanRoute(route);
-  for (let i = 0; i < contentKeys.length; i += 1) {
-    // extract the attributes which are derived from content frontmatter
-    const { attributes } = loadedContent[contentKeys[i]];
-    if (cleanRoute(attributes.route) === cleaned) {
-      return loadedContent[contentKeys[i]].parsed;
-    }
-  }
-  throw new Error(`No content found for route: ${route}`);
+  const { parsed } = await contentByRoute(route);
+  return parsed;
 }
 
 /**
@@ -165,7 +146,7 @@ export async function loadContentByRoute(route) {
  */
 // @expose
 export async function getContentMeta() {
-  const loaded = await getContent();
-  return Object.keys(loaded).map((key) =>
-    loaded[key].attributes);
+  const found = await find(Q.filter(Q.key.startsWith(contentPrefix)));
+  // even if this is empty it works
+  return found.map(({ value }) => value.attributes);
 }
