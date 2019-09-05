@@ -37,7 +37,6 @@ const processor = unified()
 export async function parseMDLocal(markdownContent) {
   const fmContent = fm(markdownContent);
   const { contents } = await processor.process(fmContent.body);
-  fmContent.parsed = contents;
   return {
     ...fmContent,
     parsed: contents,
