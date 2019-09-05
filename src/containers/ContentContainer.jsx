@@ -25,6 +25,8 @@ const ContentContainer = function ({ html }) {
     Prism.highlightAll();
   });
 
+  // TODO: Fix issue with whitespace in generated React elements
+  //       See: https://github.com/aknuds1/html-to-react/issues/79
   return (
     <div className='content-container' id='content-container'>
       {
