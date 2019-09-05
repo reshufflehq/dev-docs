@@ -32,7 +32,7 @@ async function getContent() {
 
 /**
  * Authenticated route which will convert raw markdown
- * into it's valid HTML repr. Also returns frontmatter
+ * into its valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
  *
  * @param { string } jwt - token used for identification
