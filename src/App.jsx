@@ -28,7 +28,7 @@ class App extends Component {
   }
 
   /**
-   * Store a user token for future user
+   * Store a user token for future sessions
    */
   storeUserToken = (userToken) => {
     localStorage.setItem('userToken', userToken);
