@@ -64,7 +64,7 @@ export async function updateContent(jwt, content) {
 
   let potentialError = undefined;
   try {
-    await update(`content__${route}`, (prevContent) => {
+    await update(`${contentPrefix}${route}`, (prevContent) => {
       return parsed;
     });
   } catch (err) {
