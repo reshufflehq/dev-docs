@@ -1,0 +1,61 @@
+.admin {
+  height: 100vh;
+  /* no silly horizontal scroll */
+  overflow-x: hidden;
+
+  &-config {
+    position: relative;
+    width: 100%;
+    min-height: 100px;
+    max-height: 100px;
+
+    margin-left: 10%;
+
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    /* keep the submit button off of other content */
+    &-submit {
+      margin-left: 2%;
+      margin-right: 2%;
+    }
+
+    &-alert {
+      overflow: hidden;
+      position: absolute;
+      padding-top: 1%;
+      width: 80%;
+      height: 100%;
+      z-index: 10000;
+    }
+  }
+
+  &-display {
+    position: relative;
+    width: 80%;
+    height: 30%;
+    min-height: 400px;
+    max-height: 400px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    border: 1px solid black;
+    /* match Bootstrap border radius for text-input */
+    border-radius: 4px;
+    overflow: scroll;
+  }
+
+  &-form {
+    width: 80%;
+    height: 90%;
+    margin: 0 auto;
+
+    /* rest of view height should be for input display */
+    &-wrapper {
+      height: calc(100% - 30% - 100px);
+      padding-top: 2%;
+    }
+  }
+}

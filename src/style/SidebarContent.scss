@@ -1,0 +1,86 @@
+.sidebar {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+
+  &-category {
+    // TODO: Replace with global style and rem
+    font-family: Avenir;
+    font-style: bold;
+    font-weight: 800;
+  }
+
+  &-content {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 20%;
+  }
+
+  &-responsive-content {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 10%;
+    padding-bottom: 100px;
+  }
+
+  &-accordion {
+    .card:not(:first-child) {
+      margin-top: 10%;
+    }
+
+    .responsive-card:not(:first-child) {
+      margin-top: 2%;
+    }
+
+    .card {
+      // remove the default backend color entirely
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    .card, .card .card-header {
+      border: none;
+    }
+
+    .card-header {
+      background: transparent;
+      padding: 0;
+    }
+
+    .btn {
+      width: 100%;
+      // TODO: Replace with global
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      padding: 0;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .btn-link {
+      // TODO: Replace with global
+      text-decoration: none;
+      color: black;
+      font-weight: 600;
+    }
+
+    .btn-link:hover, .btn-link:focus {
+      text-decoration: none;
+      color: black;
+    }
+     
+    li + li {
+      margin-top: 10px;
+    }
+  }
+
+  &-category-subitem {
+    margin-bottom: 3%;
+  }
+}
+
+/* specifically make scrollbar 0 dim for webkit based browsers */
+.sidebar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

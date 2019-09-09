@@ -1,0 +1,58 @@
+.nav-bar {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+
+  width: inherit;
+  height: inherit;
+  min-width: 300px;
+
+  // TODO: Replace with global color
+  background-color: #3A3535;
+
+  &-content {
+    display: flex;
+    align-items: center;
+    /* take sidebar width into account */
+    width: calc(100% - 300px);
+  }
+
+  &-title {
+    // with this width the title is always displayed
+    min-width: 100px;
+    margin-left: 20px;
+  }
+
+  &-icons {
+    display: flex;
+    justify-content: space-around;
+
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
+
+    // TODO: Replace with rem
+    font-size: 35px;
+    // TODO: Replace with global color
+    color: white;
+  }
+
+  a {
+    text-decoration: none;
+    outline: none;
+    // TODO: Replace with global color
+    color: white;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .nav-bar {
+    &-content {
+      width: 100%;
+    }
+
+    &-right {
+      font-size: 28px;
+    }
+  }
+}
