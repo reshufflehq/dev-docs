@@ -52,7 +52,6 @@ export default class Admin extends Component {
       dropdownItems: [],
       formValidated: false,
       textAreaValue: '',
-      startingTextState: undefined,
       showAlert: undefined,
       alertVariant: undefined,
     };
@@ -65,7 +64,6 @@ export default class Admin extends Component {
       const res = await getContentByRoute(this.props.userToken, route);
       this.setState({
         html: res.parsed,
-        startingTextState: res.raw,
         textAreaValue: res.raw,
       });
     } catch (err) {
@@ -112,7 +110,7 @@ export default class Admin extends Component {
     if (this.state.textAreaValue !== '' &&
         this.state.textAreaValue !== undefined) {
       try {
-        const updated = await updateContent(this.props.userToken, this.state.textAreaValue, this.state.startingTextState);
+        const updated = await updateContent(this.props.userToken, this.state.textAreaValue);
         // manual error handling is required because of
         // some current idiosyncrasies
         if (isError(updated)) {
@@ -122,7 +120,6 @@ export default class Admin extends Component {
           });
         } else {
           this.setState({
-            startingTextState: this.state.textAreaValue,
             showAlert: 'Post successfully updated!',
             alertVariant: 'info',
           });

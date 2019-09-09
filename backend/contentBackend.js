@@ -46,7 +46,7 @@ export async function parseMD(jwt, markdownContent) {
  * remote
  */
 /* @expose */
-export async function updateContent(jwt, content, clientPrevContent = null) {
+export async function updateContent(jwt, content) {
   await validateJWT(jwt);
   // parse the client provided markdown to extract
   // the route attribute
@@ -65,24 +65,7 @@ export async function updateContent(jwt, content, clientPrevContent = null) {
   let potentialError = undefined;
   try {
     await update(`content__${route}`, (prevContent) => {
-      if (prevContent) {
-        const copied = { ...prevContent };
-        if (clientPrevContent !== null &&
-            clientPrevContent !== copied.raw) {
-          potentialError = {
-            type: 'error',
-            code: 'CONTENT_HAS_CHANGED',
-            message: `Content at route: "${route}" has been modified since reading`,
-          };
-          throw new Error(potentialError.message);
-        }
-        return {
-          ...copied,
-          ...parsed,
-        };
-      } else {
-        return parsed;
-      }
+      return parsed;
     });
   } catch (err) {
     // "err" object is currently wrapped by backend,
