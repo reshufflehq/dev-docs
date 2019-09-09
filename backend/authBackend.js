@@ -10,7 +10,7 @@ import { OAuth2Client } from 'google-auth-library';
 // THE HMAC CANNOT BE LEAKED!!!!!!!!!!!!!!
 const {
   REACT_APP_OAUTH_CLIENT_ID,
-  HMAC,
+  JWT_HMAC_KEY,
   REACT_APP_VALID_HOSTED_DOMAIN,
 } = process.env;
 
@@ -51,7 +51,7 @@ export async function authenticateUser(googleToken) {
       name: payload.name,
       picture: payload.picture,
       email: payload.email,
-    }, HMAC);
+    }, JWT_HMAC_KEY);
   } else {
     // TODO: Format error to meet specification defined in contentBackend
     throw new Error(`User cannot be authenticated, ${hd} is not a valid host domain`);
@@ -61,6 +61,6 @@ export async function authenticateUser(googleToken) {
 // validates a JWT by decoding it with the HMAC secret
 export async function validateJWT(token) {
   // this will throw if verification fails
-  jwt.verify(token, HMAC);
+  jwt.verify(token, JWT_HMAC_KEY);
   return true;
 }
