@@ -68,6 +68,7 @@ export async function updateContent(jwt, content) {
       return parsed;
     });
   } catch (err) {
+    console.error(err);
     // "err" object is currently wrapped by backend,
     // this makes it very hard to use
     return potentialError || {
