@@ -62,5 +62,5 @@ export async function authenticateUser(googleToken) {
 export async function validateJWT(token) {
   // this will throw if verification fails
   jwt.verify(token, JWT_HMAC_KEY);
-  return true;
+  return token;
 }
