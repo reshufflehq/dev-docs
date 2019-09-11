@@ -17,7 +17,7 @@ function Routes(props) {
     if (isDefault) {
       // only allow 1 default page
       if (defaultFound) {
-        throw new Error('Maximum of 1 default page allowed');
+        throw new Error(`Cannot set "${route}" as the default page, default already set`);
       }
       defaultFound = true;
       routePaths.push('/', '/home');
