@@ -49,7 +49,6 @@ export async function authenticateUser(googleToken) {
     // store some basic (unreliable) profile information in the token
     return jwt.sign({
       name: payload.name,
-      picture: payload.picture,
       email: payload.email,
     }, JWT_HMAC_KEY);
   } else {
