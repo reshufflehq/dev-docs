@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import '../style/Nav.scss';
 
 // ShiftJS nav logo
-import logo from '../logo.svg';
+import logo from '../reshuffle.svg';
 
 // various links to our social media
 const Links = {
