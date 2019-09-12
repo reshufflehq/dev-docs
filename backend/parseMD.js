@@ -5,10 +5,12 @@ import stringify from 'rehype-stringify';
 import slug from 'rehype-slug';
 import link from 'rehype-autolink-headings';
 import fm from 'front-matter';
+import raw from 'rehype-raw';
 
 const processor = unified()
   .use(parse)
-  .use(remark2rehype)
+  .use(remark2rehype, { allowDangerousHTML: true })
+  .use(raw)
   .use(slug)
   .use(link)
   .use(stringify);
