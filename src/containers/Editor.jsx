@@ -18,7 +18,7 @@ import { isError } from '../backendHelpers.js';
 
 import ContentContainer from './ContentContainer';
 
-import '../style/Admin.scss';
+import '../style/Editor.scss';
 
 /**
  * Basic dropdown displaying existing content of site
@@ -44,7 +44,7 @@ function PostDropdown ({ items, onSelect }) {
   );
 }
 
-export default class Admin extends Component {
+export default class Editor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -135,12 +135,12 @@ export default class Admin extends Component {
 
   render() {
     return (
-      <div className='admin'>
-        <div className='admin-config'>
+      <div className='editor'>
+        <div className='editor-config'>
           <PostDropdown items={this.state.dropdownItems}
                         onSelect={this.onPostSelected}
           />
-          <div className='admin-config-submit'>
+          <div className='editor-config-submit'>
             <Button variant='primary'
                     onClick={this.handleSubmitPost}
             >
@@ -149,7 +149,7 @@ export default class Admin extends Component {
           </div>
           {
             this.state.showAlert && (
-              <div className='admin-config-alert'>
+              <div className='editor-config-alert'>
                 <Alert variant={this.state.alertVariant}
                        onClose={
                          () => this.setState({
@@ -164,14 +164,14 @@ export default class Admin extends Component {
             )
           }
         </div>
-        <div className='admin-display'>
+        <div className='editor-display'>
           <ContentContainer html={this.state.html} />
         </div>
-        <div className='admin-form-wrapper'>
-          <div className='admin-form'>
+        <div className='editor-form-wrapper'>
+          <div className='editor-form'>
             <Form noValidate
                   validated={this.state.formValidated}
-                  id='admin-update-form'
+                  id='editor-update-form'
             >
               <Form.Group controlId='form.textinput'>
                 <Form.Label>Post Content (markdown format)</Form.Label>
