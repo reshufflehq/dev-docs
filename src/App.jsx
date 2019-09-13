@@ -5,7 +5,7 @@ import PrivateRoute from './components/PrivateRoute';
 
 import DevSite from './containers/DevSite';
 import Auth from './containers/Auth';
-import Admin from './containers/Admin';
+import Editor from './containers/Editor';
 
 class App extends Component {
   constructor(props) {
@@ -45,8 +45,8 @@ class App extends Component {
     // Otherwise, defer to the DevSite nested routing
     return (
       <Switch>
-        <PrivateRoute path='/admin'
-                      component={Admin}
+        <PrivateRoute path='/editor'
+                      component={Editor}
                       userToken={childProps.userToken}
                       {...this.props}
                       {...childProps}

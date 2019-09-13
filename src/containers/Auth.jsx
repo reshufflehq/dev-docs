@@ -41,7 +41,7 @@ export default ({ storeUserToken, userToken }) => {
     );
   } else if (userToken !== undefined) {
     // if the user token exists, take user to Admin page
-    return (<Redirect to='/admin'/>);
+    return (<Redirect to='/editor'/>);
   }
 
   return (
