@@ -18,10 +18,10 @@
     "reactjs"
   ],
   "dependencies": {
-    "@binaris/shift-code-transform": "0.0.2",
-    "@binaris/shift-db": "^0.3.0",
-    "@binaris/shift-fetch-runtime": "0.0.3",
-    "@binaris/shift-local-proxy": "0.0.8",
+    "@reshuffle/code-transform": "0.0.3",
+    "@reshuffle/db": "^0.5.1",
+    "@reshuffle/fetch-runtime": "0.0.5",
+    "@reshuffle/local-proxy": "^0.2.6",
     "bootstrap": "^4.3.1",
     "dotenv": "^8.1.0",
     "font-awesome": "^4.7.0",

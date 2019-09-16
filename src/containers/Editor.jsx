@@ -1,4 +1,4 @@
-import '@binaris/shift-code-transform/macro';
+import '@reshuffle/code-transform/macro';
 import React, { Component } from 'react';
 
 import Alert from 'react-bootstrap/Alert';

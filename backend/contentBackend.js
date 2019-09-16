@@ -1,4 +1,4 @@
-import { get, update, Q, find } from '@binaris/shift-db';
+import { get, update, Q, find } from '@reshuffle/db';
 
 import { validateJWT } from './authBackend';
 import { parseMDLocal } from './parseMD';

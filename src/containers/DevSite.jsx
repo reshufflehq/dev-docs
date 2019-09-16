@@ -1,4 +1,4 @@
-import '@binaris/shift-code-transform/macro';
+import '@reshuffle/code-transform/macro';
 
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';

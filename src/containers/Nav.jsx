@@ -10,7 +10,7 @@ import logo from '../logo.svg';
 const Links = {
   DISCORD: 'https://discord.gg/M8CC5hy',
   TWITTER: 'https://twitter.com/shiftjsteam',
-  GITHUB: 'https://github.com/binaris',
+  GITHUB: 'https://github.com/reshufflehq',
 }
 
 export default function Nav() {
