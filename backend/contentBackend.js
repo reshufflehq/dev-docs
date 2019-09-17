@@ -118,8 +118,14 @@ export async function updateContent(jwt, content) {
   let potentialError = undefined;
   try {
     await update(`${contentPrefix}${route}`, (prevContent) => {
+      if (prevContent) {
+        return {
+          disabled: prevContent.disabled,
+          ...parsed,
+        };
+      }
       return {
-        disabled: prevContent.disabled,
+        disabled: true,
         ...parsed,
       };
     });
