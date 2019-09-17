@@ -1,0 +1,40 @@
+.postcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  margin: 1%;
+  padding: 1%;
+  
+  min-height: 100px;
+  border: 1px solid black;
+
+  &-title {
+    width: 100%;
+    height: 30%;
+    font-weight: 600px;
+    font-size: 24px;
+  }
+
+  &-route {
+    width: 100%;
+    height: 10%;
+  }
+
+  &-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    width: 50%;
+    height: 60%;
+    padding-top: 1%;
+    margin-bottom: 1%;
+
+    > button {
+      margin-right: 2%;
+    }
+
+    > button:not-first {
+      margin-left: 2%;
+    }
+  }
+}
