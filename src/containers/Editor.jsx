@@ -4,8 +4,6 @@ import React, { Component } from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 
 import {
   parseMD,
@@ -17,32 +15,9 @@ import {
 import { isError } from '../backendHelpers.js';
 
 import ContentContainer from './ContentContainer';
+import PostDropdown from '../components/PostDropdown';
 
 import '../style/Editor.scss';
-
-/**
- * Basic dropdown displaying existing content of site
- */
-function PostDropdown ({ items, onSelect }) {
-  return (
-    <DropdownButton title='Select a Post'>
-      {
-        items.map((item) =>
-          (
-            <Dropdown.Item id={item.route}
-                           key={item.route}
-                           eventKey={item.route}
-                           as='button'
-                           onSelect={onSelect}
-            >
-              {item.route}
-            </Dropdown.Item>
-          )
-        )
-      }
-    </DropdownButton>
-  );
-}
 
 export default class Editor extends Component {
   constructor(props) {
@@ -76,7 +51,8 @@ export default class Editor extends Component {
   }
 
   async backgroundLoadMeta() {
-    this.setState({ dropdownItems: await getContentMeta() });
+    const { content } = await getContentMeta(this.props.userToken);
+    this.setState({ dropdownItems: content });
   }
 
   /**
@@ -139,6 +115,7 @@ export default class Editor extends Component {
         <div className='editor-config'>
           <PostDropdown items={this.state.dropdownItems}
                         onSelect={this.onPostSelected}
+                        title='Select a Post'
           />
           <div className='editor-config-submit'>
             <Button variant='primary'
