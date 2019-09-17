@@ -50,6 +50,7 @@ export default ({ storeUserToken, userToken }) => {
           clientId={REACT_APP_OAUTH_CLIENT_ID}
           buttonText='Login'
           onSuccess={(response) => onSuccess(response, storeUserToken)}
+          onFailure={console.error}
           hostedDomain={REACT_APP_VALID_HOSTED_DOMAIN}
           render={renderProps => (
             <button onClick={renderProps.onClick}

@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 
 import '../style/Nav.scss';
 
-// ShiftJS nav logo
+// Reshuffle nav logo
 import logo from '../reshuffle.svg';
 
 // various links to our social media
 const Links = {
   DISCORD: 'https://discord.gg/M8CC5hy',
-  TWITTER: 'https://twitter.com/shiftjsteam',
+  TWITTER: 'https://twitter.com/reshufflehq',
   GITHUB: 'https://github.com/reshufflehq',
 }
 
@@ -19,7 +19,7 @@ export default function Nav() {
       <div className='nav-bar-content'>
         <div className='nav-bar-title'>
           <Link to='/'>
-            <img src={logo} alt='ShiftJS logo'/>
+            <img src={logo} alt='Reshuffle logo'/>
           </Link>
         </div>
 
