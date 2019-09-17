@@ -22,6 +22,7 @@
     "@reshuffle/db": "^0.5.1",
     "@reshuffle/fetch-runtime": "0.0.5",
     "@reshuffle/local-proxy": "^0.2.6",
+    "@reshuffle/server-function": "0.0.6",
     "bootstrap": "^4.3.1",
     "dotenv": "^8.1.0",
     "font-awesome": "^4.7.0",
