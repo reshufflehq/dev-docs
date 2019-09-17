@@ -213,7 +213,7 @@ export async function getContentMeta(jwt) {
 /** @expose */
 export async function getPublicContentMeta() {
   const { found, homeRoute } = await queryMeta();
-  const onlyPublic = found.filter(({ disabled }) => !disabled);
+  const onlyPublic = found.filter(({ value }) => !value.disabled);
   // even if this is empty it works
   return {
     content: onlyPublic.map(({ value }) => value.attributes),
