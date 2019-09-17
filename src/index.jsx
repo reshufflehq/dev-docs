@@ -9,6 +9,8 @@ import 'sanitize.css/typography.css';
 import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
+import './style/index.scss';
+
 import App from './App';
 
 ReactDOM.render(
