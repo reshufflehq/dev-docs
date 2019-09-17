@@ -35,6 +35,7 @@ export default class DynamicContentContainer extends Component {
         this.jumpToHash();
       } catch (err) {
         console.error(`Failed to load post ${route}`);
+        this.props.history.push('/');
       }
     }
   }

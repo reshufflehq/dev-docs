@@ -6,11 +6,12 @@ import PrivateRoute from './components/PrivateRoute';
 import DevSite from './containers/DevSite';
 import Auth from './containers/Auth';
 import Editor from './containers/Editor';
+import Admin from './containers/Admin';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { userToken: undefined };
+    this.state = { userToken: null };
   }
 
   async componentDidMount() {
@@ -20,11 +21,12 @@ class App extends Component {
     try {
       const userToken = localStorage.getItem('userToken');
       if (userToken !== null) {
-        this.setState({ userToken });
+        return this.setState({ userToken });
       }
     } catch (err) {
       console.error(err);
     }
+    this.setState({ userToken: undefined });
   }
 
   /**
@@ -43,22 +45,32 @@ class App extends Component {
 
     // If the route is an auth or admin route, display it.
     // Otherwise, defer to the DevSite nested routing
-    return (
-      <Switch>
-        <PrivateRoute path='/editor'
-                      component={Editor}
-                      userToken={childProps.userToken}
-                      {...this.props}
-                      {...childProps}
-        />
-        <Route path='/auth' render={
-            (props) => <Auth {...props} {...childProps} />
-          }
-        />
-        { /* catch all for unknown routes */ }
-        <Route component={DevSite} props={this.props} />
-      </Switch>
-    );
+    if (this.state.userToken !== null) {
+      return (
+        <Switch>
+          <PrivateRoute exact path='/editor'
+                        component={Editor}
+                        userToken={childProps.userToken}
+                        {...this.props}
+                        {...childProps}
+          />
+          <PrivateRoute path='/admin'
+                        component={Admin}
+                        userToken={childProps.userToken}
+                        {...this.props}
+                        {...childProps}
+          />
+          <Route path='/auth' render={
+              (props) => <Auth {...props} {...childProps} />
+            }
+          />
+          { /* catch all for unknown routes */ }
+          <Route component={DevSite} props={this.props} />
+        </Switch>
+      );
+    } else {
+      return null;
+    }
   }
 }
 

@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import Sidebar from 'react-sidebar';
 import Button from 'react-bootstrap/Button';
 
-import { getContentMeta } from '../../backend/contentBackend';
+import { getPublicContentMeta } from '../../backend/contentBackend';
 
 import Routes from '../Routes';
 
@@ -66,7 +66,7 @@ class Devsite extends Component {
   // fetch all of the posts metadata when the component mounts
   async componentDidMount() {
     try {
-      this.setState({ postMeta: await getContentMeta() });
+      this.setState({ postMeta: await getPublicContentMeta() });
     } catch (err) {
       console.error('Failed to load post metadata');
     }
@@ -111,7 +111,7 @@ class Devsite extends Component {
     const { postMeta } = this.state;
     if (postMeta !== undefined) {
       const ConfiguredSidebar = (
-        <SidebarContent pages={this.state.postMeta}
+        <SidebarContent pages={this.state.postMeta.content}
                         handleLinkSelected={
                           () => this.setState({ navOpen: false })
                         }
@@ -137,7 +137,7 @@ class Devsite extends Component {
               {
                 this.state.navOpen ? ConfiguredSidebar :
                   <Routes childProps={{
-                    pages: postMeta,
+                    meta: postMeta,
                   }} />
               }
             </Sidebar>

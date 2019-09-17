@@ -5,21 +5,15 @@ import AppliedRoute from './components/AppliedRoute';
 import DynamicContentContainer from './containers/DynamicContentContainer';
 import Four0Four from './containers/Four0Four';
 
-function Routes(props) {
-  const { childProps } = props;
-  let defaultFound = false;
+function Routes({ childProps }) {
+  const { content, homeRoute } = childProps.meta;
 
   // create a route for every markdown page that
   // is provided by the backend
-  const routes = childProps.pages.map((meta) => {
-    const { route, isDefault } = meta;
+  const routes = content.map((meta) => {
+    const { route } = meta;
     const routePaths = [`/${route}`];
-    if (isDefault) {
-      // only allow 1 default page
-      if (defaultFound) {
-        throw new Error(`Cannot set "${route}" as the default page, default already set`);
-      }
-      defaultFound = true;
+    if (route === homeRoute) {
       routePaths.push('/', '/home');
     }
     return <AppliedRoute key={route}
