@@ -16,9 +16,18 @@ function cleanRoute(someRoute) {
   return someRoute.replace(/\s+/g, '-').toLowerCase();
 }
 
-function isValidRoute(route, failAction) {
+/**
+ * Authenticate a user using jwt, and then validate
+ * the provided route by checking for null/undefined.
+ *
+ * @param { string } jwt - token used for identification
+ * @param { string } route - site route that will be validated
+ * @param { string } invalidRouteError - error that should be thrown on invalid route
+ */
+async function authUserAndValidateRoute(jwt, route, invalidRouteError) {
+  await validateJWT(jwt);
   if (route === undefined || route === null) {
-    throw new Error(failAction);
+    throw new Error(invalidRouteError || 'Invalid route');
   }
 }
 
@@ -47,8 +56,7 @@ export async function parseMD(jwt, markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(jwt, route) {
-  await validateJWT(jwt);
-  isValidRoute(route, 'Cannot set undefined or null route as home');
+  await authUserAndValidateRoute(jwt, route, 'Cannot set undefined or null route as home');
   await update('homeRoute', () => route);
 }
 
@@ -61,8 +69,7 @@ export async function setRouteAsHome(jwt, route) {
  */
 /* @expose */
 export async function deletePostByRoute(jwt, route) {
-  await validateJWT(jwt);
-  isValidRoute(route, 'Cannot delete undefined or null route');
+  await authUserAndValidateRoute(jwt, route, 'Cannot delete undefined or null route');
   await remove(`${contentPrefix}${route}`);
 }
 
@@ -75,8 +82,7 @@ export async function deletePostByRoute(jwt, route) {
  */
 /* @expose */
 export async function setDisabledPostByRoute(jwt, route, disable) {
-  await validateJWT(jwt);
-  isValidRoute(route, 'Cannot disable undefined or null route');
+  await authUserAndValidateRoute(jwt, route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${route}`, (prevContent) => {
     return {
       ...prevContent,
