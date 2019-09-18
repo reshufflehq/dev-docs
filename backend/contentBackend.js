@@ -134,11 +134,21 @@ export async function updateContent(jwt, content) {
   }
 }
 
-async function contentByRoute(route) {
+/**
+ * Retrieves the content stored at a specified route. If
+ * the request is authenticated, disabled content will be
+ * returned, otherwise an error will be thrown.
+ *
+ * @param { string } route - identifier of content being requested
+ * @param { boolean } authenticated - is this request authenticated
+ *
+ * @return { object } - content located at specified route
+ */
+async function contentByRoute(route, authenticated) {
   const content = await get(`${contentPrefix}${cleanRoute(route)}`);
   if (content === undefined) {
     throw new Error(`No content found for route: ${route}`);
-  } else if (content.disabled) {
+  } else if (content.disabled && !authenticated) {
     throw new Error(`Content at route: ${route} is disabled`);
   }
   return content;
@@ -156,7 +166,7 @@ async function contentByRoute(route) {
 /* @expose */
 export async function getContentByRoute(jwt, route) {
   await validateJWT(jwt);
-  return await contentByRoute(route);
+  return await contentByRoute(route, true);
 }
 
 /**
@@ -169,7 +179,7 @@ export async function getContentByRoute(jwt, route) {
  */
 // @expose
 export async function loadContentByRoute(route) {
-  const { parsed } = await contentByRoute(route);
+  const { parsed } = await contentByRoute(route, false);
   return parsed;
 }
 
