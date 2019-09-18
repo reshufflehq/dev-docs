@@ -99,8 +99,6 @@ export async function setDisabledPostByRoute(jwt, route, disabled) {
  * @param { string } jwt - token used for identification
  * @param { string } content - valid markdown content with fronmatter containing route
  * attribute
- * @param { string } clientPrevContent - the content state the client currently believes exists in the
- * remote
  */
 /* @expose */
 export async function updateContent(jwt, content) {
@@ -119,20 +117,11 @@ export async function updateContent(jwt, content) {
   }
   const route = cleanRoute(parsed.attributes.route);
 
-  let potentialError = undefined;
   try {
-    await update(`${contentPrefix}${route}`, (prevContent) => {
-      if (prevContent) {
-        return {
-          disabled: prevContent.disabled,
-          ...parsed,
-        };
-      }
-      return {
-        disabled: true,
-        ...parsed,
-      };
-    });
+    await update(`${contentPrefix}${route}`, (prevContent) => ({
+      disabled: (prevContent ? prevContent.disabled : true),
+      ...parsed,
+    }));
   } catch (err) {
     console.error(err);
     // "err" object is currently wrapped by backend,
