@@ -78,15 +78,15 @@ export async function deletePostByRoute(jwt, route) {
  *
  * @param { string } jwt - token used for identification
  * @param { string } route - which post to disable/enable
- * @param { boolean } disable - enable or disable this route
+ * @param { boolean } disabled - enable or disable this route
  */
 /* @expose */
-export async function setDisabledPostByRoute(jwt, route, disable) {
+export async function setDisabledPostByRoute(jwt, route, disabled) {
   await authUserAndValidateRoute(jwt, route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${route}`, (prevContent) => {
     return {
       ...prevContent,
-      disabled: disable,
+      disabled,
     };
   });
 }
