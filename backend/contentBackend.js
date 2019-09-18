@@ -83,12 +83,10 @@ export async function deletePostByRoute(jwt, route) {
 /* @expose */
 export async function setDisabledPostByRoute(jwt, route, disabled) {
   await authUserAndValidateRoute(jwt, route, 'Cannot disable undefined or null route');
-  await update(`${contentPrefix}${route}`, (prevContent) => {
-    return {
-      ...prevContent,
-      disabled,
-    };
-  });
+  await update(`${contentPrefix}${route}`, (prevContent) => ({
+    ...prevContent,
+    disabled,
+  }));
 }
 
 /**
