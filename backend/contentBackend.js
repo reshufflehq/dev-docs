@@ -39,7 +39,7 @@ export async function parseMD(jwt, markdownContent) {
 }
 
 /**
- * Set the sites home route
+ * Set the site's home route
  *
  * @param { string } jwt - token used for identification
  * @param { string } route - route to set as home
