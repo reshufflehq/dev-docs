@@ -23,16 +23,18 @@ export default class Admin extends Component {
 
   async componentDidMount() {
     // immediately start trying to load metadata
-    await this.backgroundLoadMeta();
+    await this.fetchRemoteMetadata();
   }
 
-  async backgroundLoadMeta() {
+  async fetchRemoteMetadata() {
     const { contentMeta, homeRoute } = await getSiteMetadata(this.props.userToken);
     this.setState({ posts: contentMeta, homeRoute });
   }
 
   setPostDisabled = async (route, disabled) => {
     await setDisabledPostByRoute(this.props.userToken, route, disabled);
+    // optimistically update the local post state so it
+    // reflects the recently accepted change in the backend
     this.setState((prevState) => {
       const { posts } = prevState;
       const updated = posts.map((post) => {
@@ -46,7 +48,9 @@ export default class Admin extends Component {
       });
       return { posts: updated };
     });
-    this.backgroundLoadMeta();
+    // start a lazy loaded background update as an
+    // extra precaution against desync
+    this.fetchRemoteMetadata();
   }
 
   deletePost = async (route) => {
