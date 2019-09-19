@@ -6,8 +6,7 @@
   float: right;
   margin-left: 20%;
   margin-right: 0%;
-  padding-top: 5%;
-  padding-bottom: 10vh;
+
   /* no x dim scroll */
   overflow-x: hidden;
   overflow-y: scroll;
@@ -20,6 +19,8 @@
   margin-right: auto;
   // keep main content from blowing up on big screens
   max-width: 800px;
+  margin-bottom: 20%;
+  padding-top: 5%;
 
   // TODO: unify font sizes with rem and root defs
   font-size: 16px;
@@ -33,9 +34,11 @@
 }
 
 // for smaller desktops and mobile
-@media only screen and (max-height: 600px) {
-  .content-container {
+@media only screen and (max-width: 600px) {
+  .markdown-body {
     padding-bottom: 75px;
+  }
+  .content-container {
   }
 }
 
