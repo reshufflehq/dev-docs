@@ -31,15 +31,15 @@ export default class Admin extends Component {
     this.setState({ posts: contentMeta, homeRoute });
   }
 
-  disablePost = async (route, disable) => {
-    await setDisabledPostByRoute(this.props.userToken, route, disable);
+  setPostDisabled = async (route, disabled) => {
+    await setDisabledPostByRoute(this.props.userToken, route, disabled);
     this.setState((prevState) => {
       const { posts } = prevState;
       const updated = posts.map((post) => {
         if (post.route === route) {
           return {
             ...post,
-            disabled: !disable,
+            disabled: !disabled,
           };
         }
         return post;
@@ -77,7 +77,7 @@ export default class Admin extends Component {
                          isDisabled={disabled}
                          setHome={this.setRouteAsHome}
                          deletePost={this.deletePost}
-                         disablePost={this.disablePost}
+                         disablePost={this.setPostDisabled}
                />
       });
     }
