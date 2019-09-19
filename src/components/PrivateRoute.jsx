@@ -9,7 +9,7 @@ const PrivateRoute = ({ props, component: Component, userToken, ...rest }) => {
     <Route
       {...rest}
       render={(routeProps) => {
-        if (userToken !== undefined) {
+        if (userToken) {
           return (<Component userToken={userToken} {...routeProps} {...props} />);
         } else {
           // if userToken is not found, redirect to auth page
