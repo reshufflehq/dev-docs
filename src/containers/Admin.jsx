@@ -19,8 +19,11 @@ export default class Admin extends Component {
       posts: [],
       homeRoute: undefined,
     };
+  }
+
+  async componentDidMount() {
     // immediately start trying to load metadata
-    this.backgroundLoadMeta();
+    await this.backgroundLoadMeta();
   }
 
   async backgroundLoadMeta() {
