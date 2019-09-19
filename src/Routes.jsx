@@ -6,11 +6,11 @@ import DynamicContentContainer from './containers/DynamicContentContainer';
 import Four0Four from './containers/Four0Four';
 
 function Routes({ childProps }) {
-  const { content, homeRoute } = childProps.meta;
+  const { contentMeta, homeRoute } = childProps.meta;
 
   // create a route for every markdown page that
   // is provided by the backend
-  const routes = content.map((meta) => {
+  const routes = contentMeta.map((meta) => {
     const { route } = meta;
     const routePaths = [`/${route}`];
     if (route === homeRoute) {

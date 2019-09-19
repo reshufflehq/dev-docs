@@ -6,7 +6,7 @@ import PostCard from '../components/PostCard';
 import {
   deletePostByRoute,
   setDisabledPostByRoute,
-  getContentMeta,
+  getSiteMetadata,
   setRouteAsHome,
 } from '../../backend/contentBackend.js';
 
@@ -24,8 +24,8 @@ export default class Admin extends Component {
   }
 
   async backgroundLoadMeta() {
-    const { content, homeRoute } = await getContentMeta(this.props.userToken);
-    this.setState({ posts: content, homeRoute });
+    const { contentMeta, homeRoute } = await getSiteMetadata(this.props.userToken);
+    this.setState({ posts: contentMeta, homeRoute });
   }
 
   disablePost = async (route, disable) => {
@@ -64,12 +64,14 @@ export default class Admin extends Component {
 
   makeAdminPosts() {
     if (this.state.posts) {
-      return this.state.posts.map((post) => {
-        const isHome = this.state.homeRoute === post.route;
-        return <PostCard {...post}
-                         key={post.route}
+      return this.state.posts.map(({ disabled, attributes }) => {
+        const { route, title } = attributes;
+        const isHome = this.state.homeRoute === route;
+        return <PostCard route={route}
+                         title={title}
+                         key={route}
                          isHome={isHome}
-                         isDisabled={post.disabled}
+                         isDisabled={disabled}
                          setHome={this.setRouteAsHome}
                          deletePost={this.deletePost}
                          disablePost={this.disablePost}

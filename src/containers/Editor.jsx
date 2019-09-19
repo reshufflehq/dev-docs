@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import {
   parseMD,
   updateContent,
-  getContentMeta,
+  getSiteMetadata,
   getContentByRoute,
 } from '../../backend/contentBackend.js';
 
@@ -51,8 +51,8 @@ export default class Editor extends Component {
   }
 
   async backgroundLoadMeta() {
-    const { content } = await getContentMeta(this.props.userToken);
-    this.setState({ dropdownItems: content });
+    const { contentMeta } = await getSiteMetadata(this.props.userToken);
+    this.setState({ dropdownItems: contentMeta });
   }
 
   /**
@@ -113,7 +113,7 @@ export default class Editor extends Component {
     return (
       <div className='editor'>
         <div className='editor-config'>
-          <PostDropdown items={this.state.dropdownItems}
+          <PostDropdown postMeta={this.state.dropdownItems}
                         onSelect={this.onPostSelected}
                         title='Select a Post'
           />
