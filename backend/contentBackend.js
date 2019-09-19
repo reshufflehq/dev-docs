@@ -119,8 +119,8 @@ export async function updateContent(jwt, content) {
 
   try {
     await update(`${contentPrefix}${route}`, (prevContent) => ({
-      disabled: (prevContent ? prevContent.disabled : true),
       ...parsed,
+      disabled: (prevContent ? prevContent.disabled : true),
     }));
   } catch (err) {
     console.error(err);
@@ -183,43 +183,86 @@ export async function loadContentByRoute(route) {
   return parsed;
 }
 
-async function queryMeta() {
-  return {
-    found: await find(Q.filter(Q.key.startsWith(contentPrefix))),
-    homeRoute: await get('homeRoute') || undefined,
-  };
+/**
+ * Retrieve all the content stored in the backend. Each
+ * piece of content has the following structure.
+ *
+ * Content {
+ *   parsed: string;
+ *   frontmatter: string;
+ *   body: string;
+ *   raw: string;
+ *   disabled?: boolean;
+ *   attributes: object (can by anything included in frontmatter)
+ * }
+ *
+ * @return { Content[] } - all of the content stored in the backend
+ *
+ */
+async function getAllContent() {
+  const contentQuery = await find(Q.filter(Q.key.startsWith(contentPrefix)));
+  return contentQuery.map(({ value }) => value);
 }
 
 /**
- * Returns the metadata of all content.
+ * Returns the homeRoute or undefined if no home is set.
+ *
+ * @return { string | undefined } - previously set homeRoute
+ */
+async function getHomeRoute() {
+  return (await get('homeRoute') || undefined);
+}
+
+/**
+ * Retrieve the metadata of all stored content. Metadata
+ * includes all the frontmatter attributes, along with
+ * the disabled/enabled state.
+ *
+ * Metadata {
+ *   disabled: boolean;
+ *   attributes: object;
+ * }
+ *
+ * @return { object[] } - metadata of all content
+ */
+async function getContentMetadata() {
+  const allContent = await getAllContent();
+  return allContent.map(({ attributes, disabled }) => ({
+    attributes,
+    disabled,
+  }));
+}
+
+/**
+ * Returns the metadata representing all content on the
+ * site (including disabled content), along with
+ * optionally defined "homeRoute".
+ *
+ * @param { string } - token used for identification
  *
  * @return {object} - metadata of content
  */
 /** @expose */
-export async function getContentMeta(jwt) {
+export async function getSiteMetadata(jwt) {
   await validateJWT(jwt);
-  const { found, homeRoute } = await queryMeta();
-  const foundWithDisabled = found.map(({ value }) => {
-    return { ...value.attributes, disabled: value.disabled };
-  });
   return {
-    content: foundWithDisabled,
-    homeRoute,
+    contentMeta: await getContentMetadata(),
+    homeRoute: await getHomeRoute(),
   };
 }
 
 /**
- * Returns the metadata of all public content.
+ * Returns the metadata of all public content on the site,
+ * along with the optionally defined "homeRoute".
  *
  * @return {object} - metadata of public content
  */
 /** @expose */
-export async function getPublicContentMeta() {
-  const { found, homeRoute } = await queryMeta();
-  const onlyPublic = found.filter(({ value }) => !value.disabled);
-  // even if this is empty it works
+export async function getSitePublicMeta() {
+  const contentMeta = await getContentMetadata();
+  const onlyPublicMeta = contentMeta.filter(({ disabled }) => !disabled);
   return {
-    content: onlyPublic.map(({ value }) => value.attributes),
-    homeRoute,
+    contentMeta: onlyPublicMeta.map(({ attributes }) => attributes),
+    homeRoute: await getHomeRoute(),
   };
 }
