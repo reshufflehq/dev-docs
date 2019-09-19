@@ -19,7 +19,7 @@
 
   &-title {
     // with this width the title is always displayed
-    min-width: 100px;
+    min-width: 130px;
     margin-left: 20px;
   }
 
@@ -49,6 +49,14 @@
   .nav-bar {
     &-content {
       width: 100%;
+    }
+
+    &-title {
+      margin-left: 10px;
+    }
+
+    &-icons {
+      margin-right: 5%;
     }
 
     &-right {
