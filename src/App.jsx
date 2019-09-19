@@ -11,22 +11,12 @@ import Admin from './containers/Admin';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { userToken: null };
+    this.state = { userToken: undefined };
   }
 
   async componentDidMount() {
-    // try and retrieve a previously stored user token
-    // which will allow the client to visit protected
-    // routes
-    try {
-      const userToken = localStorage.getItem('userToken');
-      if (userToken !== null) {
-        return this.setState({ userToken });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    this.setState({ userToken: undefined });
+    // if the token doesn't exist, it will be set to null
+    this.setState({ userToken: localStorage.getItem('userToken') });
   }
 
   /**
@@ -45,7 +35,7 @@ class App extends Component {
 
     // If the route is an auth or admin route, display it.
     // Otherwise, defer to the DevSite nested routing
-    if (this.state.userToken !== null) {
+    if (this.state.userToken !== undefined) {
       return (
         <Switch>
           <PrivateRoute exact path='/editor'
