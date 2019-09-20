@@ -29,14 +29,16 @@ const ContentContainer = function ({ html }) {
   //       See: https://github.com/aknuds1/html-to-react/issues/79
   return (
     <div className='content-container' id='content-container'>
-      {
-        html !== undefined &&
-          <div id='markdown-content'
-               className='markdown-body'
-          >
-            {htmlToReactParser.parse(html)}
-          </div>
-      }
+      <div className='content-container-inner'>
+        {
+          html !== undefined &&
+            <div id='markdown-content'
+                 className='markdown-body'
+            >
+              {htmlToReactParser.parse(html)}
+            </div>
+        }
+      </div>
     </div>
   );
 };

@@ -2,14 +2,23 @@
   height: 100%;
   width: 100%;
 
-  /* center the content container */
-  float: right;
-  margin-left: 20%;
-  margin-right: 0%;
-
   /* no x dim scroll */
   overflow-x: hidden;
   overflow-y: scroll;
+
+  /* hide scrollbar on desktop */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+
+  /* enable smooth scrolling for mobile */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  &-inner {
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+  }
 }
 
 .markdown-body {
@@ -29,14 +38,26 @@
 
 /* specifically make scrollbar 0 dim for webkit based browsers */
 .content-container::-webkit-scrollbar {
+  display: none;
   width: 0;
   height: 0;
 }
 
-// for smaller desktops and mobile
+// for smaller desktops and mobile prevents from
+// going to far edge of screen
 @media only screen and (max-width: 1300px) {
   .content-container {
-    width: 80%;
-    margin-right: 10%;
+    &-inner {
+      width: 80%;
+    }
+  }
+}
+
+// make bottom content accessible on mobile devices
+@media only screen and (max-width: 600px) {
+  .content-container {
+    &-inner {
+      padding-bottom: 120px;
+    }
   }
 }
