@@ -22,6 +22,9 @@ const sidebarStyles = {
   content: {
     overflow: 'hidden',
   },
+  overlay: {
+    overflow: 'hidden',
+  },
   sidebar: {
     overflow: 'auto',
     minWidth: sidebarWidth,
