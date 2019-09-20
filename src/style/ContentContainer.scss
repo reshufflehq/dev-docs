@@ -19,7 +19,7 @@
   margin-right: auto;
   // keep main content from blowing up on big screens
   max-width: 800px;
-  margin-bottom: 20%;
+  margin-bottom: 120px;
   padding-top: 5%;
 
   // TODO: unify font sizes with rem and root defs
@@ -31,13 +31,6 @@
 .content-container::-webkit-scrollbar {
   width: 0;
   height: 0;
-}
-
-// for smaller desktops and mobile
-@media only screen and (max-width: 600px) {
-  .markdown-body {
-    padding-bottom: 75px;
-  }
 }
 
 // for smaller desktops and mobile
