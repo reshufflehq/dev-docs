@@ -11,10 +11,12 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import './style/index.scss';
 
+import GA from './utils/GoogleAnalytics';
 import App from './App';
 
 ReactDOM.render(
   <Router>
+    { GA.init() && <GA.RouteTracker /> }
     <App />
   </Router>,
   document.getElementById('root')
