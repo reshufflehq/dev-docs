@@ -61,7 +61,7 @@ export default class Admin extends Component {
         posts: posts.filter(post => post.route !== route)
       };
     });
-    this.backgroundLoadMeta();
+    this.fetchRemoteMetadata();
   }
 
   setRouteAsHome = async (route) => {
