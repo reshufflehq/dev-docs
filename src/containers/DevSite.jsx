@@ -45,11 +45,12 @@ const sidebarStyles = {
 const sidebarCategories = [
   'Getting Started',
   'Main Concepts',
-  'API Reference',
-  'Testing',
-  'FAQ',
-  'Template Apps',
-  'Community',
+  'Other Goodies',
+  // 'API Reference',
+  // 'Testing',
+  // 'FAQ',
+  // 'Template Apps',
+  // 'Community',
 ];
 
 // define a media query for views that are at least 800px
