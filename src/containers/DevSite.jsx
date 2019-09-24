@@ -113,6 +113,16 @@ class Devsite extends Component {
   render() {
     const { postMeta } = this.state;
     if (postMeta !== undefined) {
+      let currentCat = undefined;
+      const maybeCurrentRoute = this.props.history.location.pathname;
+      if (maybeCurrentRoute) {
+        const { contentMeta } = this.state.postMeta;
+        for (let i = 0; i < contentMeta.length; i += 1) {
+          if (contentMeta[i].route === maybeCurrentRoute.slice(1)) {
+            currentCat = contentMeta[i].category;
+          }
+        }
+      }
       const ConfiguredSidebar = (
         <SidebarContent pages={this.state.postMeta.contentMeta}
                         handleLinkSelected={
@@ -120,6 +130,7 @@ class Devsite extends Component {
                         }
                         categories={sidebarCategories}
                         isResponsive={this.state.navOpen}
+                        currentCat={currentCat}
         />
       );
 
@@ -130,6 +141,7 @@ class Devsite extends Component {
           </div>
           <div className='root-content'>
             <Sidebar
+              currentCat={currentCat}
               pullRight={true}
               open={this.state.sidebarOpen}
               docked={this.state.sidebarDocked}

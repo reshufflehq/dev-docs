@@ -48,7 +48,13 @@ function Category({ category, pages, handleLinkSelected }) {
 // Changes size/behavior based on the view area
 //
 function SidebarContent(props) {
-  const { pages, handleLinkSelected, categories, isResponsive } = props;
+  const {
+    pages,
+    currentCat,
+    handleLinkSelected,
+    categories,
+    isResponsive
+  } = props;
 
   // Sort our pages into their respective sidebar categories. Pages without
   // matching categories will be assigned the 'unknown' container
@@ -79,7 +85,10 @@ function SidebarContent(props) {
             categories.map((category, i) => {
               // case sensitivity makes the process very error prone
               const lowerCat = category.toLowerCase();
-              const eKey = isResponsive ? undefined : i;
+              let eKey = isResponsive ? undefined : i;
+              if (currentCat === category) {
+                eKey = undefined;
+              }
               return (
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>
