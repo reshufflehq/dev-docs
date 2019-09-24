@@ -278,3 +278,29 @@ pre > code.highlight {
   color: #6a737d;
   font-size: .85em;
 }
+
+blockquote {
+  background: rgba(35, 191, 98, 0.2);
+  border-left: 5px solid rgba(35, 191, 98, 0.8);
+  margin: 1.5em 0px;
+  padding: 0.5em 10px;
+}
+
+blockquote p {
+  display: inline;
+}
+
+.example {
+  margin: 1.5em 0px;
+  padding: 0.5em 10px;
+}
+
+.good-example {
+  @extend .example;
+  background: rgba(0, 191, 0, 0.5);
+}
+
+.bad-example {
+  @extend .example;
+  background: rgba(191, 0, 0, 0.4);
+}
