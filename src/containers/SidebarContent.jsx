@@ -76,19 +76,17 @@ function SidebarContent(props) {
   const rClass = isResponsive ? 'responsive-card' : '';
   const contentClass = isResponsive ?
     'sidebar-responsive-content' : 'sidebar-content';
+  const activeKey = isResponsive ? undefined : currentCat;
 
   return (
     <div className='sidebar'>
       <div className={contentClass}>
-        <Accordion className='sidebar-accordion'>
+        <Accordion className='sidebar-accordion' defaultActiveKey={activeKey}>
           {
             categories.map((category, i) => {
               // case sensitivity makes the process very error prone
               const lowerCat = category.toLowerCase();
-              let eKey = isResponsive ? undefined : i;
-              if (currentCat === category) {
-                eKey = undefined;
-              }
+              let eKey = isResponsive ? undefined : category;
               return (
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>

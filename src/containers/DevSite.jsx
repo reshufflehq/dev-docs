@@ -111,18 +111,27 @@ class Devsite extends Component {
     );
   }
 
+  findRouteCategory(meta, currRoute, homeRoute) {
+    const shortRoute = currRoute.slice(1);
+    for (let i = 0; i < meta.length; i += 1) {
+      const { route, category } = meta[i];
+      if (shortRoute === route) {
+        return category;
+      } else if (route === homeRoute &&
+        (currRoute === '/' || currRoute === '/home')) {
+        return category;
+      }
+    }
+  }
+
   render() {
     const { postMeta } = this.state;
     if (postMeta !== undefined) {
       let currentCat = undefined;
       const maybeCurrentRoute = this.props.location.pathname;
       if (maybeCurrentRoute) {
-        const { contentMeta } = this.state.postMeta;
-        for (let i = 0; i < contentMeta.length; i += 1) {
-          if (contentMeta[i].route === maybeCurrentRoute.slice(1)) {
-            currentCat = contentMeta[i].category;
-          }
-        }
+        const { contentMeta, homeRoute } = this.state.postMeta;
+        currentCat = this.findRouteCategory(contentMeta, maybeCurrentRoute, homeRoute);
       }
       const ConfiguredSidebar = (
         <SidebarContent pages={this.state.postMeta.contentMeta}
