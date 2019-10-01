@@ -115,7 +115,7 @@ class Devsite extends Component {
     const { postMeta } = this.state;
     if (postMeta !== undefined) {
       let currentCat = undefined;
-      const maybeCurrentRoute = this.props.history.location.pathname;
+      const maybeCurrentRoute = this.props.location.pathname;
       if (maybeCurrentRoute) {
         const { contentMeta } = this.state.postMeta;
         for (let i = 0; i < contentMeta.length; i += 1) {
