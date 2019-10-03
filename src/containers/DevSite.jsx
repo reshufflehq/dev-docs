@@ -115,10 +115,8 @@ class Devsite extends Component {
     const shortRoute = currRoute.slice(1);
     for (let i = 0; i < meta.length; i += 1) {
       const { route, category } = meta[i];
-      if (shortRoute === route) {
-        return category;
-      } else if (route === homeRoute &&
-        (currRoute === '/' || currRoute === '/home')) {
+      const isRouteHome = (currRoute === '/' || currRoute === '/home');
+      if (shortRoute === route || (route === homeRoute && isRouteHome)) {
         return category;
       }
     }
