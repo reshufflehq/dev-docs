@@ -114,6 +114,18 @@ function SidebarContent(props) {
               );
             })
           }
+          { /* this is a temporary hardcoded card/link for our API docs */ }
+          <Card className={rClass} key='api reference'>
+            <Card.Header>
+              <a href='https://dev-docs.reshuffle.com'
+                 alt='Link to the API reference of Reshuffle'
+              >
+                <span className='sidebar-category'>
+                  API REFERENCE SITE
+                </span>
+              </a>
+            </Card.Header>
+          </Card>
         </Accordion>
       </div>
     </div>
