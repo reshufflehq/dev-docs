@@ -11,16 +11,17 @@ const Links = {
   DISCORD: 'https://discord.gg/M8CC5hy',
   TWITTER: 'https://twitter.com/reshufflehq',
   GITHUB: 'https://github.com/reshufflehq',
+  RESHUFFLE_HOME: 'https://reshuffle.com',
 }
 
 export default function Nav() {
   return (
     <div className='nav-bar'>
       <div className='nav-bar-content'>
-        <div className='nav-bar-title'>
-          <Link to='/'>
+        <div className='nav-bar-title unselectable'>
+          <a href={Links.RESHUFFLE_HOME}>
             <img src={logo} alt='Reshuffle logo'/>
-          </Link>
+          </a>
         </div>
 
         <div className='nav-bar-icons'>
