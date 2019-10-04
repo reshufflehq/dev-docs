@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 import Accordion from 'react-bootstrap/Accordion';
@@ -7,8 +7,9 @@ import Button from 'react-bootstrap/Button';
 
 import '../style/SidebarContent.scss';
 
-// specific down arrow svg used in Figma
+// specific down and right arrow svg used in Figma
 import downArrow from '../down.svg';
+import rightArrow from '../right.svg';
 
 function Category({ category, pages, handleLinkSelected }) {
   // this ensures that there are any pages (at all) for a category
@@ -56,6 +57,8 @@ function SidebarContent(props) {
     isResponsive
   } = props;
 
+  const [pickedCat, pickCat] = useState(currentCat);
+
   // Sort our pages into their respective sidebar categories. Pages without
   // matching categories will be assigned the 'unknown' container
   const pagesByCategory = { unknown: [] };
@@ -76,7 +79,7 @@ function SidebarContent(props) {
   const rClass = isResponsive ? 'responsive-card' : '';
   const contentClass = isResponsive ?
     'sidebar-responsive-content' : 'sidebar-content';
-  const activeKey = isResponsive ? undefined : currentCat;
+  const activeKey = isResponsive ? undefined : pickedCat;
 
   return (
     <div className='sidebar'>
@@ -90,12 +93,14 @@ function SidebarContent(props) {
               return (
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant='link' eventKey={eKey}>
+                    <Accordion.Toggle as={Button} variant='link' eventKey={eKey} onClick={() => pickCat(category)}>
                       <span className='sidebar-category'>
                         {category.toUpperCase()}&nbsp;&nbsp;
                       </span>
                       {
-                        (eKey !== undefined) &&
+                        (activeKey === category) ?
+                          <img src={rightArrow} alt='Right arrow'/>
+                        :
                           <img src={downArrow} alt='Down arrow'/>
                       }
                     </Accordion.Toggle>
