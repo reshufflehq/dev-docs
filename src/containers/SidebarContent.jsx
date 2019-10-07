@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
 import Accordion from 'react-bootstrap/Accordion';
@@ -50,14 +50,20 @@ function Category({ category, pages, handleLinkSelected }) {
 //
 function SidebarContent(props) {
   const {
-    pages,
+    categories,
     currentCat,
     handleLinkSelected,
-    categories,
-    isResponsive
+    isResponsive,
+    pages,
+    routeChanged,
   } = props;
 
   const [pickedCat, pickCat] = useState(currentCat);
+  useEffect(() => {
+    if (routeChanged) {
+      pickCat(currentCat);
+    }
+  }, [routeChanged, currentCat]);
 
   // Sort our pages into their respective sidebar categories. Pages without
   // matching categories will be assigned the 'unknown' container
@@ -74,6 +80,14 @@ function SidebarContent(props) {
     }
   });
 
+  const handleCategoryPicked = (category) => {
+    if (pickedCat === category) {
+      pickCat(undefined);
+    } else {
+      pickCat(category);
+    }
+  }
+
   // determines whether the current view area is small enough
   // to warrant responisve content
   const rClass = isResponsive ? 'responsive-card' : '';
@@ -84,7 +98,9 @@ function SidebarContent(props) {
   return (
     <div className='sidebar'>
       <div className={contentClass}>
-        <Accordion className='sidebar-accordion' defaultActiveKey={activeKey}>
+        <Accordion className='sidebar-accordion'
+                   activeKey={activeKey}
+        >
           {
             categories.map((category, i) => {
               // case sensitivity makes the process very error prone
@@ -93,7 +109,11 @@ function SidebarContent(props) {
               return (
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant='link' eventKey={eKey} onClick={() => pickCat(category)}>
+                    <Accordion.Toggle as={Button}
+                                      variant='link'
+                                      eventKey={eKey}
+                                      onClick={() => handleCategoryPicked(category)
+                    }>
                       <span className='sidebar-category'>
                         {category.toUpperCase()}&nbsp;&nbsp;
                       </span>

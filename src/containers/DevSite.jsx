@@ -64,7 +64,16 @@ class Devsite extends Component {
       sidebarOpen: false,
       navOpen: false,
       postMeta: undefined,
+      routeChanged: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.setState({ routeChanged: true });
+    } else if (this.state.routeChanged === true) {
+      this.setState({ routeChanged: false });
+    }
   }
 
   // fetch all of the posts metadata when the component mounts
@@ -123,56 +132,63 @@ class Devsite extends Component {
   }
 
   render() {
-    const { postMeta } = this.state;
-    if (postMeta !== undefined) {
-      let currentCat = undefined;
-      const maybeCurrentRoute = this.props.location.pathname;
-      if (maybeCurrentRoute) {
-        const { contentMeta, homeRoute } = this.state.postMeta;
-        currentCat = this.findRouteCategory(contentMeta, maybeCurrentRoute, homeRoute);
-      }
-      const ConfiguredSidebar = (
-        <SidebarContent pages={this.state.postMeta.contentMeta}
-                        handleLinkSelected={
-                          () => this.setState({ navOpen: false })
-                        }
-                        categories={sidebarCategories}
-                        isResponsive={this.state.navOpen}
-                        currentCat={currentCat}
-        />
-      );
+    const {
+      navOpen,
+      postMeta,
+      routeChanged,
+      sidebarOpen,
+      sidebarDocked
+    } = this.state;
 
-      return (
-        <div className='root-container'>
-          <div className='nav-shaper'>
-            <Nav/>
-          </div>
-          <div className='root-content'>
-            <Sidebar
-              currentCat={currentCat}
-              pullRight={true}
-              open={this.state.sidebarOpen}
-              docked={this.state.sidebarDocked}
-              onSetOpen={(open) => this.setState({ sidebarOpen: open })}
-              styles={{ ...sidebarStyles }}
-              sidebar={ConfiguredSidebar}
-            >
-              {
-                this.state.navOpen ? ConfiguredSidebar :
-                  <Routes childProps={{
-                    meta: postMeta,
-                  }} />
-              }
-            </Sidebar>
-            <div className='mobile-button'>
-              { this.getMobileButton() }
-            </div>
-          </div>
-        </div>
-      );
+    if (postMeta === undefined) {
+      return null;
     }
 
-    return null;
+    let currentCat = undefined;
+    const maybeCurrentRoute = this.props.location.pathname;
+    if (maybeCurrentRoute) {
+      const { contentMeta, homeRoute } = postMeta;
+      currentCat = this.findRouteCategory(contentMeta, maybeCurrentRoute, homeRoute);
+    }
+    const ConfiguredSidebar = (
+      <SidebarContent pages={postMeta.contentMeta}
+                      handleLinkSelected={
+                        () => this.setState({ navOpen: false })
+                      }
+                      categories={sidebarCategories}
+                      isResponsive={navOpen}
+                      currentCat={currentCat}
+                      routeChanged={routeChanged}
+      />
+    );
+
+    return (
+      <div className='root-container'>
+        <div className='nav-shaper'>
+          <Nav/>
+        </div>
+        <div className='root-content'>
+          <Sidebar
+            pullRight={true}
+            open={sidebarOpen}
+            docked={sidebarDocked}
+            onSetOpen={(open) => this.setState({ sidebarOpen: open })}
+            styles={{ ...sidebarStyles }}
+            sidebar={ConfiguredSidebar}
+          >
+            {
+              navOpen ? ConfiguredSidebar :
+                <Routes childProps={{
+                  meta: postMeta,
+                }} />
+            }
+          </Sidebar>
+          <div className='mobile-button'>
+            { this.getMobileButton() }
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 
