@@ -151,6 +151,18 @@ function SidebarContent(props) {
               </a>
             </Card.Header>
           </Card>
+          <Card className={rClass} key='public roadmap'>
+            <Card.Header>
+              <a href='https://trello.com/b/e4Hfp3cB/public-roadmap'
+                 alt='Link to the public Reshuffle roadmap'
+              >
+                <span className='sidebar-category'>
+                  PUBLIC ROADMAP
+                </span>
+              </a>
+            </Card.Header>
+          </Card>
+
         </Accordion>
       </div>
     </div>
