@@ -21,7 +21,7 @@
     "@reshuffle/code-transform": "0.0.3",
     "@reshuffle/db": "^0.5.3",
     "@reshuffle/fetch-runtime": "0.0.5",
-    "@reshuffle/local-proxy": "^0.2.11",
+    "@reshuffle/local-proxy": "^0.2.12",
     "@reshuffle/server-function": "0.0.6",
     "bootstrap": "^4.3.1",
     "dotenv": "^8.1.0",
