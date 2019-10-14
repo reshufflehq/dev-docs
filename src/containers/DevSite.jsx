@@ -45,10 +45,10 @@ const sidebarStyles = {
 const sidebarCategories = [
   'Getting Started',
   'Main Concepts',
+  'FAQ',
   'Other Goodies',
   // 'API Reference',
   // 'Testing',
-  // 'FAQ',
   // 'Template Apps',
   // 'Community',
 ];
