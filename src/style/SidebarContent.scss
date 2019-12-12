@@ -77,6 +77,20 @@
   &-category-subitem {
     margin-bottom: 3%;
   }
+
+  // remove default link styling and add small margin
+  &-standalone-item {
+    color: inherit;
+    text-decoration: inherit;
+    margin-bottom: 3%;
+  }
+
+  // keep this human sized
+  &-external-link-icon {
+    padding-bottom: 3px;
+    padding-left: 2px;
+    width: 9%;
+  }
 }
 
 /* specifically make scrollbar 0 dim for webkit based browsers */

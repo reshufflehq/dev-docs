@@ -53,6 +53,13 @@ const sidebarCategories = [
   // 'Community',
 ];
 
+function partition(array, isValid) {
+  return array.reduce(([pass, fail], elem) => {
+    return isValid(elem) ? [[...pass, elem], fail] : [pass, [...fail, elem]];
+  }, [[], []]);
+}
+
+
 // define a media query for views that are at least 800px
 const mql = window.matchMedia(`(min-width: 800px)`);
 
@@ -150,12 +157,19 @@ class Devsite extends Component {
       const { contentMeta, homeRoute } = postMeta;
       currentCat = this.findRouteCategory(contentMeta, maybeCurrentRoute, homeRoute);
     }
+
+    const [standalone, grouped] = partition(postMeta.contentMeta,
+      ({ type }) => type === 'standalone');
+    const standaloneItems = standalone.map(({ title, route }) =>
+      ({ linkOrRoute: route, displayName: title }));
+
     const ConfiguredSidebar = (
-      <SidebarContent pages={postMeta.contentMeta}
+      <SidebarContent pages={grouped}
                       handleLinkSelected={
                         () => this.setState({ navOpen: false })
                       }
                       categories={sidebarCategories}
+                      standaloneItems={standaloneItems}
                       isResponsive={navOpen}
                       currentCat={currentCat}
                       routeChanged={routeChanged}

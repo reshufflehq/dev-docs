@@ -5,11 +5,14 @@ import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
+import isExternal from 'is-url-external';
+
 import '../style/SidebarContent.scss';
 
 // specific down and right arrow svg used in Figma
 import downArrow from '../down.svg';
 import rightArrow from '../right.svg';
+import externalLink from '../external-link.svg';
 
 function Category({ category, pages, handleLinkSelected }) {
   // this ensures that there are any pages (at all) for a category
@@ -51,6 +54,7 @@ function Category({ category, pages, handleLinkSelected }) {
 function SidebarContent(props) {
   const {
     categories,
+    standaloneItems,
     currentCat,
     handleLinkSelected,
     isResponsive,
@@ -139,30 +143,46 @@ function SidebarContent(props) {
               );
             })
           }
-          { /* this is a temporary hardcoded card/link for our API docs */ }
-          <Card className={rClass} key='api reference'>
-            <Card.Header>
-              <a href='https://dev-docs.reshuffle.com'
-                 alt='Link to the API reference of Reshuffle'
-              >
-                <span className='sidebar-category'>
-                  API REFERENCE SITE
-                </span>
-              </a>
-            </Card.Header>
-          </Card>
-          <Card className={rClass} key='public roadmap'>
-            <Card.Header>
-              <a href='https://trello.com/b/e4Hfp3cB/public-roadmap'
-                 alt='Link to the public Reshuffle roadmap'
-              >
-                <span className='sidebar-category'>
-                  PUBLIC ROADMAP
-                </span>
-              </a>
-            </Card.Header>
-          </Card>
-
+          {
+            standaloneItems &&
+            standaloneItems.map(({ displayName, linkOrRoute }) => {
+              const extLink = isExternal(linkOrRoute);
+              if (extLink) {
+                return (
+                  <Card className={rClass} key={displayName}>
+                    <Card.Header>
+                      <a href={linkOrRoute}
+                         alt={displayName}
+                         className='sidebar-standalone-item'
+                      >
+                        <span className='sidebar-category'>
+                          {displayName.toUpperCase()}
+                        </span>
+                        <img src={externalLink}
+                             alt='External link'
+                             className='sidebar-external-link-icon'
+                        />
+                      </a>
+                    </Card.Header>
+                  </Card>
+                );
+              }
+              return (
+                <Card className={rClass} key={displayName}>
+                  <Card.Header>
+                    <Link to={linkOrRoute}
+                          alt={displayName}
+                          className='sidebar-standalone-item'
+                    >
+                      <span className='sidebar-category'>
+                        {displayName.toUpperCase()}
+                      </span>
+                    </Link>
+                  </Card.Header>
+                </Card>
+              );
+            })
+          }
         </Accordion>
       </div>
     </div>
