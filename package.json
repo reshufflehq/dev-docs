@@ -18,11 +18,13 @@
     "reactjs"
   ],
   "dependencies": {
-    "@reshuffle/code-transform": "0.0.3",
-    "@reshuffle/db": "^0.5.3",
-    "@reshuffle/fetch-runtime": "0.0.5",
-    "@reshuffle/local-proxy": "^0.2.11",
-    "@reshuffle/server-function": "0.0.6",
+    "@reshuffle/code-transform": "^0.1.0",
+    "@reshuffle/db": "^0.5.5",
+    "@reshuffle/fetch-runtime": "^0.1.0",
+    "@reshuffle/local-proxy": "^0.3.4",
+    "@reshuffle/passport": "0.0.4",
+    "@reshuffle/react-auth": "^0.1.7",
+    "@reshuffle/server-function": "^0.2.2",
     "bootstrap": "^4.3.1",
     "dotenv": "^8.1.0",
     "font-awesome": "^4.7.0",
