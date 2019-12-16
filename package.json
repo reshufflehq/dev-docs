@@ -39,7 +39,7 @@
     "react-ga": "^2.6.0",
     "react-google-login": "^5.0.5",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
+    "react-scripts": "^3.3.0",
     "react-sidebar": "^3.0.2",
     "rehype-autolink-headings": "^2.0.5",
     "rehype-raw": "^4.0.1",
