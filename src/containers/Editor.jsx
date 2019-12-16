@@ -34,9 +34,9 @@ export default class Editor extends Component {
     this.backgroundLoadMeta();
   }
 
-  setPost = async (route) =>{
+  setPost = async route => {
     try {
-      const res = await getContentByRoute(this.props.userToken, route);
+      const res = await getContentByRoute(route);
       this.setState({
         html: res.parsed,
         textAreaValue: res.raw,
@@ -44,14 +44,14 @@ export default class Editor extends Component {
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
-  onPostSelected = async (event) => {
+  onPostSelected = async event => {
     await this.setPost(event);
-  }
+  };
 
   async backgroundLoadMeta() {
-    const { contentMeta } = await getSiteMetadata(this.props.userToken);
+    const { contentMeta } = await getSiteMetadata();
     this.setState({ dropdownItems: contentMeta });
   }
 
@@ -61,7 +61,7 @@ export default class Editor extends Component {
    */
   async updateDisplay(rawContent) {
     try {
-      const parsed = await parseMD(this.props.userToken, rawContent);
+      const parsed = await parseMD(rawContent);
       this.setState({ html: parsed.parsed });
     } catch (err) {
       // TODO: Handle this with future error handling system
@@ -73,20 +73,22 @@ export default class Editor extends Component {
    * Whenever the input text area changes, re-draw the
    * display to reflect the new content
    */
-  onTextAreaChange = (event) => {
+  onTextAreaChange = event => {
     event.preventDefault();
     const fieldVal = event.target.value;
     this.updateDisplay(fieldVal);
     this.setState({ textAreaValue: fieldVal });
-  }
+  };
 
-  handleSubmitPost = async (event) => {
+  handleSubmitPost = async event => {
     event.preventDefault();
     // ensure there is content to submit
-    if (this.state.textAreaValue !== '' &&
-        this.state.textAreaValue !== undefined) {
+    if (
+      this.state.textAreaValue !== '' &&
+      this.state.textAreaValue !== undefined
+    ) {
       try {
-        const updated = await updateContent(this.props.userToken, this.state.textAreaValue);
+        const updated = await updateContent(this.state.textAreaValue);
         // manual error handling is required because of
         // some current idiosyncrasies
         if (isError(updated)) {
@@ -107,56 +109,57 @@ export default class Editor extends Component {
         });
       }
     }
-  }
+  };
 
   render() {
     return (
       <div className='editor'>
         <div className='editor-config'>
-          <PostDropdown postMeta={this.state.dropdownItems}
-                        onSelect={this.onPostSelected}
-                        title='Select a Post'
+          <PostDropdown
+            postMeta={this.state.dropdownItems}
+            onSelect={this.onPostSelected}
+            title='Select a Post'
           />
           <div className='editor-config-submit'>
-            <Button variant='primary'
-                    onClick={this.handleSubmitPost}
-            >
+            <Button variant='primary' onClick={this.handleSubmitPost}>
               Update
             </Button>
           </div>
-          {
-            this.state.showAlert && (
-              <div className='editor-config-alert'>
-                <Alert variant={this.state.alertVariant}
-                       onClose={
-                         () => this.setState({
-                           showAlert: undefined, alertVariant: undefined
-                         })
-                       }
-                       dismissible
-                >
-                  <Alert.Heading>{this.state.showAlert}</Alert.Heading>
-                </Alert>
-              </div>
-            )
-          }
+          {this.state.showAlert && (
+            <div className='editor-config-alert'>
+              <Alert
+                variant={this.state.alertVariant}
+                onClose={() =>
+                  this.setState({
+                    showAlert: undefined,
+                    alertVariant: undefined,
+                  })
+                }
+                dismissible
+              >
+                <Alert.Heading>{this.state.showAlert}</Alert.Heading>
+              </Alert>
+            </div>
+          )}
         </div>
         <div className='editor-display'>
           <ContentContainer html={this.state.html} />
         </div>
         <div className='editor-form-wrapper'>
           <div className='editor-form'>
-            <Form noValidate
-                  validated={this.state.formValidated}
-                  id='editor-update-form'
+            <Form
+              noValidate
+              validated={this.state.formValidated}
+              id='editor-update-form'
             >
               <Form.Group controlId='form.textinput'>
                 <Form.Label>Post Content (markdown format)</Form.Label>
-                <Form.Control as='textarea'
-                              rows='20'
-                              onChange={this.onTextAreaChange}
-                              value={this.state.textAreaValue}
-                              required
+                <Form.Control
+                  as='textarea'
+                  rows='20'
+                  onChange={this.onTextAreaChange}
+                  value={this.state.textAreaValue}
+                  required
                 />
               </Form.Group>
             </Form>
