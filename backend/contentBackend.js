@@ -1,6 +1,6 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
 
-import { validateJWT } from './authBackend';
+import { validateUser, validate } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
@@ -17,15 +17,15 @@ function cleanRoute(someRoute) {
 }
 
 /**
- * Authenticate a user using jwt, and then validate
+ * Authenticate a user using , and then validate
  * the provided route by checking for null/undefined.
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } route - site route that will be validated
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
-async function authUserAndValidateRoute(jwt, route, invalidRouteError) {
-  await validateJWT(jwt);
+async function authUserAndValidateRoute(route, invalidRouteError) {
+  await validateUser();
   if (route === undefined || route === null) {
     throw new Error(invalidRouteError || 'Invalid route');
   }
@@ -36,28 +36,27 @@ async function authUserAndValidateRoute(jwt, route, invalidRouteError) {
  * into its valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } markdownContent - content to parse
  *
  * @return { object } - parsed content and attributes
  */
 /* @expose */
-export async function parseMD(jwt, markdownContent) {
-  await validateJWT(jwt);
+export async function parseMD(markdownContent) {
+  await validateUser();
   return parseMDLocal(markdownContent);
 }
 
 /**
  * Set the site's home route
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } route - route to set as home
  *
  */
 /* @expose */
-export async function setRouteAsHome(jwt, route) {
+export async function setRouteAsHome(route) {
   await authUserAndValidateRoute(
-    jwt,
     route,
     'Cannot set undefined or null route as home',
   );
@@ -67,13 +66,12 @@ export async function setRouteAsHome(jwt, route) {
 /**
  * Delete the post at the specified route
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } route - which post to delete
  */
 /* @expose */
-export async function deletePostByRoute(jwt, route) {
+export async function deletePostByRoute(route) {
   await authUserAndValidateRoute(
-    jwt,
     route,
     'Cannot delete undefined or null route',
   );
@@ -83,14 +81,17 @@ export async function deletePostByRoute(jwt, route) {
 /**
  * Disable the post at the specified route
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } route - which post to disable/enable
  * @param { boolean } disabled - enable or disable this route
  */
 /* @expose */
-export async function setDisabledPostByRoute(jwt, route, disabled) {
-  await authUserAndValidateRoute(jwt, route, 'Cannot disable undefined or null route');
-  await update(`${contentPrefix}${cleanRoute(route)}`, (prevContent) => ({
+export async function setDisabledPostByRoute(route, disabled) {
+  await authUserAndValidateRoute(
+    route,
+    'Cannot disable undefined or null route',
+  );
+  await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
     disabled,
   }));
@@ -103,13 +104,13 @@ export async function setDisabledPostByRoute(jwt, route, disabled) {
  * contents frontmatter. If the content does not define a route
  * attribute, this method will fail.
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } content - valid markdown content with fronmatter containing route
  * attribute
  */
 /* @expose */
-export async function updateContent(jwt, content) {
-  await validateJWT(jwt);
+export async function updateContent(content) {
+  await validateUser();
   // parse the client provided markdown to extract
   // the route attribute
   const parsed = await parseMDLocal(content);
@@ -167,14 +168,14 @@ async function contentByRoute(route, authenticated) {
  * Authenticated route which retrieves the raw markdown
  * representation of existing content.
  *
- * @param { string } jwt - token used for identification
+ * @param { string }  - token used for identification
  * @param { string } route - route of raw markdown content to retrieve
  *
  * @return { string } - raw markdown for provided route
  */
 /* @expose */
-export async function getContentByRoute(jwt, route) {
-  await validateJWT(jwt);
+export async function getContentByRoute(route) {
+  await validateUser();
   return await contentByRoute(route, true);
 }
 
@@ -252,8 +253,8 @@ async function getContentMetadata() {
  * @return {object} - metadata of content
  */
 /** @expose */
-export async function getSiteMetadata(jwt) {
-  await validateJWT(jwt);
+export async function getSiteMetadata() {
+  await validateUser();
   return {
     contentMeta: await getContentMetadata(),
     homeRoute: await getHomeRoute(),
@@ -274,4 +275,20 @@ export async function getSitePublicMeta() {
     contentMeta: onlyPublicMeta.map(({ attributes }) => attributes),
     homeRoute: await getHomeRoute(),
   };
+}
+
+/**
+
+ *
+ * @return {boolean} - returns if user is reshuffle employeee
+ */
+/** @expose */
+export async function checkEmail() {
+  const isReshuffle = await validate();
+
+  if (isReshuffle) {
+    return true;
+  }
+
+  return false;
 }
