@@ -94,7 +94,7 @@ export async function setDisabledPostByRoute(jwt, route, disabled) {
     route,
     'Cannot disable undefined or null route',
   );
-  await update(`${contentPrefix}${route}`, prevContent => ({
+  await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
     disabled,
   }));
