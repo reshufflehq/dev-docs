@@ -56,10 +56,13 @@ export async function parseMD(jwt, markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(jwt, route) {
-  await authUserAndValidateRoute(jwt, route, 'Cannot set undefined or null route as home');
+  await authUserAndValidateRoute(
+    jwt,
+    route,
+    'Cannot set undefined or null route as home',
+  );
   await update('homeRoute', () => route);
 }
-
 
 /**
  * Delete the post at the specified route
@@ -69,7 +72,11 @@ export async function setRouteAsHome(jwt, route) {
  */
 /* @expose */
 export async function deletePostByRoute(jwt, route) {
-  await authUserAndValidateRoute(jwt, route, 'Cannot delete undefined or null route');
+  await authUserAndValidateRoute(
+    jwt,
+    route,
+    'Cannot delete undefined or null route',
+  );
   await remove(`${contentPrefix}${route}`);
 }
 
@@ -118,19 +125,21 @@ export async function updateContent(jwt, content) {
   const route = cleanRoute(parsed.attributes.route);
 
   try {
-    await update(`${contentPrefix}${route}`, (prevContent) => ({
+    await update(`${contentPrefix}${route}`, prevContent => ({
       ...parsed,
-      disabled: (prevContent ? prevContent.disabled : true),
+      disabled: prevContent ? prevContent.disabled : true,
     }));
   } catch (err) {
     console.error(err);
     // "err" object is currently wrapped by backend,
     // this makes it very hard to use
-    return potentialError || {
-      type: 'error',
-      code: 'UNKNOWN_ERROR',
-      message: err.message,
-    };
+    return (
+      potentialError || {
+        type: 'error',
+        code: 'UNKNOWN_ERROR',
+        message: err.message,
+      }
+    );
   }
 }
 
@@ -210,7 +219,7 @@ async function getAllContent() {
  * @return { string | undefined } - previously set homeRoute
  */
 async function getHomeRoute() {
-  return (await get('homeRoute') || undefined);
+  return (await get('homeRoute')) || undefined;
 }
 
 /**
