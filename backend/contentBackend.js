@@ -283,9 +283,6 @@ export async function getSitePublicMeta() {
 /** @expose */
 export async function checkEmail() {
   const profile = getCurrentUser(false);
-
-  console.log(profile);
-
   if (profile === undefined) {
     return false;
   }

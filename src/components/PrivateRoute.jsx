@@ -23,6 +23,7 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
   }, [authenticated]);
 
   if (authenticated === undefined) return null;
+  console.log(email);
 
   return (
     <Route
@@ -30,6 +31,9 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
       render={routeProps => {
         if (authenticated && email) {
           return <Component {...routeProps} {...props} />;
+        } else if (authenticated && !email) {
+          // if authenticated is false, redirect to auth page
+          return <Redirect to='/' />;
         } else if (!authenticated) {
           // if authenticated is false, redirect to auth page
           return <Redirect to='/auth' />;
