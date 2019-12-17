@@ -134,13 +134,11 @@ export async function updateContent(content) {
     console.error(err);
     // "err" object is currently wrapped by backend,
     // this makes it very hard to use
-    return (
-      potentialError || {
-        type: 'error',
-        code: 'UNKNOWN_ERROR',
-        message: err.message,
-      }
-    );
+    return {
+      type: 'error',
+      code: 'UNKNOWN_ERROR',
+      message: err.message,
+    };
   }
 }
 
