@@ -276,9 +276,8 @@ export async function getSitePublicMeta() {
 }
 
 /**
-
  *
- * @return {boolean} - returns if user is reshuffle employeee
+ * @return {boolean} - returns if user is REACT_APP_VALID_HOSTED_DOMAIN matches their email
  */
 /** @expose */
 export async function checkEmail() {
