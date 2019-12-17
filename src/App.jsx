@@ -14,7 +14,7 @@ class App extends Component {
   static contextType = AuthContext;
 
   render() {
-    // If the route is an auth or admin route, display it.
+    // If the route is an auth or admin route, display it if user is right REACT_APP_VALID_HOSTED_DOMAIN .
     // Otherwise, defer to the DevSite nested routing
     if (checkEmail) {
       return (
