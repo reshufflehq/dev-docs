@@ -14,20 +14,21 @@ export default props => {
     const fetchData = async () => {
       if (authenticated) {
         const value = await checkEmail();
+
         setEmail(value);
       }
     };
 
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [authenticated]);
 
   if (authenticated && email) {
     // if the user authenticated, take user to Editor page
     return <Redirect to='/editor' />;
   }
 
-  if (authenticated && email === false) {
+  if (authenticated && !email) {
     return <Redirect to='/' />;
   }
 
