@@ -6,7 +6,8 @@
   align-items: center;
   overflow: scroll;
 
-  &-button {
+  &-a {
+    text-decoration: none;
     width: 80%;
     height: 15%;
     box-shadow: 1px 1px 1px;
