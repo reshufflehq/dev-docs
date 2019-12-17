@@ -1,9 +1,10 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
-
+import { getCurrentUser } from '@reshuffle/server-function';
 import { validateUser, validate } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
+// const editedPrefix = 'editedBy__';
 
 // Routes must adhere to a specific format (because
 // they literally are turned into URL paths). No spaces
@@ -281,6 +282,13 @@ export async function getSitePublicMeta() {
  */
 /** @expose */
 export async function checkEmail() {
+  const profile = getCurrentUser(false);
+
+  console.log(profile);
+
+  if (profile === undefined) {
+    return false;
+  }
   const isReshuffle = await validate();
 
   if (isReshuffle) {
