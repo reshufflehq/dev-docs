@@ -15,13 +15,14 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
     const fetchData = async () => {
       if (authenticated) {
         const value = await checkEmail();
+
         setEmail(value);
       }
     };
 
     fetchData();
     // eslint-disable-next-line
-  }, []);
+  }, [authenticated]);
 
   if (authenticated === undefined) return null;
 
@@ -31,7 +32,7 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
       render={routeProps => {
         if (authenticated && email) {
           return <Component {...routeProps} {...props} />;
-        } else {
+        } else if (!authenticated) {
           // if authenticated is false, redirect to auth page
           return <Redirect to='/auth' />;
         }
