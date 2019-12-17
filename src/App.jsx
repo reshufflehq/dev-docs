@@ -27,9 +27,6 @@ class App extends Component {
         </Switch>
       );
     } else {
-      {
-        /* catch all for unknown routes */
-      }
       return <Route component={DevSite} props={this.props} />;
     }
   }
