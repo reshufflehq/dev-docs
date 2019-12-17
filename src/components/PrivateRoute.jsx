@@ -13,11 +13,9 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (authenticated) {
-        const value = await checkEmail();
+      const value = await checkEmail();
 
-        setEmail(value);
-      }
+      setEmail(value);
     };
 
     fetchData();
@@ -32,8 +30,6 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
       render={routeProps => {
         if (authenticated && email) {
           return <Component {...routeProps} {...props} />;
-        } else if (authenticated && !email) {
-          return <Redirect to='/' />;
         } else if (!authenticated) {
           // if authenticated is false, redirect to auth page
           return <Redirect to='/auth' />;
