@@ -3,9 +3,7 @@ Dev docs site of Reshuffle. Uses remark, rehype and prismjs to render markdown w
 Content management is possible using hidden `'/editor'` route. To use this route, the following env vars need to exist on deploy
 
 ```
-
 REACT_APP_VALID_HOSTED_DOMAIN= // email address domain allowed for admins
-
 ```
 
 > Note: When using Create-React-App any env-var starting with REACT_APP will be injected (permanently) into the client code
