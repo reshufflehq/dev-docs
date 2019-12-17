@@ -12,16 +12,16 @@ export default props => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (authenticated) {
-        const value = await checkEmail();
+      const value = await checkEmail();
 
-        setEmail(value);
-      }
+      setEmail(value);
     };
 
     fetchData();
     // eslint-disable-next-line
   }, [authenticated]);
+
+  if (authenticated === undefined) return null;
 
   if (authenticated && email) {
     // if the user authenticated, take user to Editor page
