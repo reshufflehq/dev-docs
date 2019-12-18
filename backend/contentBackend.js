@@ -1,5 +1,5 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
-import { validateUser } from './authBackend';
+import { validateUser, throwErr } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
@@ -24,7 +24,11 @@ function cleanRoute(someRoute) {
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
 async function authUserAndValidateRoute(route, invalidRouteError) {
-  await validateUser();
+  const user = await validateUser();
+  if (user.error) {
+    return throwErr();
+  }
+
   if (route === undefined || route === null) {
     throw new Error(invalidRouteError || 'Invalid route');
   }
@@ -42,7 +46,10 @@ async function authUserAndValidateRoute(route, invalidRouteError) {
  */
 /* @expose */
 export async function parseMD(markdownContent) {
-  await validateUser();
+  const user = await validateUser();
+  if (user.error) {
+    return throwErr();
+  }
   return parseMDLocal(markdownContent);
 }
 
@@ -97,7 +104,10 @@ export async function setDisabledPostByRoute(route, disabled) {
  */
 /* @expose */
 export async function updateContent(content) {
-  await validateUser();
+  const user = await validateUser();
+  if (user.error) {
+    return throwErr();
+  }
   // parse the client provided markdown to extract
   // the route attribute
   const parsed = await parseMDLocal(content);
@@ -159,7 +169,10 @@ async function contentByRoute(route, authenticated) {
  */
 /* @expose */
 export async function getContentByRoute(route) {
-  await validateUser();
+  const user = await validateUser();
+  if (user.error) {
+    return throwErr();
+  }
   return await contentByRoute(route, true);
 }
 
@@ -238,7 +251,10 @@ async function getContentMetadata() {
  */
 /** @expose */
 export async function getSiteMetadata() {
-  await validateUser();
+  const user = await validateUser();
+  if (user.error) {
+    return throwErr();
+  }
   return {
     contentMeta: await getContentMetadata(),
     homeRoute: await getHomeRoute(),
