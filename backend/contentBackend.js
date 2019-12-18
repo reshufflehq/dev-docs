@@ -1,5 +1,5 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
-import { validateUser, throwErr } from './authBackend';
+import { validateUser } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
@@ -24,10 +24,7 @@ function cleanRoute(someRoute) {
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
 async function authUserAndValidateRoute(route, invalidRouteError) {
-  const user = await validateUser();
-  if (user.error) {
-    return throwErr();
-  }
+  await validateUser();
 
   if (route === undefined || route === null) {
     throw new Error(invalidRouteError || 'Invalid route');
@@ -46,10 +43,8 @@ async function authUserAndValidateRoute(route, invalidRouteError) {
  */
 /* @expose */
 export async function parseMD(markdownContent) {
-  const user = await validateUser();
-  if (user.error) {
-    return throwErr();
-  }
+  await validateUser();
+
   return parseMDLocal(markdownContent);
 }
 
@@ -104,10 +99,8 @@ export async function setDisabledPostByRoute(route, disabled) {
  */
 /* @expose */
 export async function updateContent(content) {
-  const user = await validateUser();
-  if (user.error) {
-    return throwErr();
-  }
+  await validateUser();
+
   // parse the client provided markdown to extract
   // the route attribute
   const parsed = await parseMDLocal(content);
@@ -169,10 +162,8 @@ async function contentByRoute(route, authenticated) {
  */
 /* @expose */
 export async function getContentByRoute(route) {
-  const user = await validateUser();
-  if (user.error) {
-    return throwErr();
-  }
+  await validateUser();
+
   return await contentByRoute(route, true);
 }
 
@@ -251,10 +242,8 @@ async function getContentMetadata() {
  */
 /** @expose */
 export async function getSiteMetadata() {
-  const user = await validateUser();
-  if (user.error) {
-    return throwErr();
-  }
+  await validateUser();
+
   return {
     contentMeta: await getContentMetadata(),
     homeRoute: await getHomeRoute(),
