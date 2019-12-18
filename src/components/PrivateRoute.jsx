@@ -16,16 +16,13 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
   useEffect(() => {
     const fetchData = async () => {
       const value = await validateUser();
-
       if (value.error) {
         setEmail(false);
       } else {
         setEmail(value);
       }
     };
-
     fetchData();
-
   }, []);
 
   if (authenticated === undefined) {
