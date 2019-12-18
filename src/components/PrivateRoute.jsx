@@ -2,7 +2,7 @@ import '@reshuffle/code-transform/macro';
 import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useAuth } from '@reshuffle/react-auth';
-import { checkEmail } from '../../backend/contentBackend';
+import { validateUser } from '../../backend/authBackend';
 
 /**
  * Standard React-router route that requires  reshuffle identity
@@ -10,20 +10,27 @@ import { checkEmail } from '../../backend/contentBackend';
 const PrivateRoute = ({ props, component: Component, ...rest }) => {
   const { authenticated } = useAuth();
   const [email, setEmail] = useState(false);
+  const url = window.location.href;
+  const urlArr = url.split('/');
 
   useEffect(() => {
     const fetchData = async () => {
-      const value = await checkEmail();
+      const value = await validateUser();
 
-      setEmail(value);
+      if (value.error) {
+        setEmail(false);
+      } else {
+        setEmail(value);
+      }
     };
 
     fetchData();
     // eslint-disable-next-line
   }, [authenticated]);
 
-  if (authenticated === undefined) return null;
-  console.log(email);
+  if (authenticated === undefined) {
+    return null;
+  }
 
   return (
     <Route
@@ -36,7 +43,14 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
           return <Redirect to='/' />;
         } else if (!authenticated) {
           // if authenticated is false, redirect to auth page
-          return <Redirect to='/auth' />;
+          return (
+            <Redirect
+              to={{
+                pathname: '/auth',
+                state: { path: urlArr[3] },
+              }}
+            />
+          );
         }
       }}
     />
