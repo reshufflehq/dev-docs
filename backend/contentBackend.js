@@ -1,5 +1,4 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
-import { getCurrentUser } from '@reshuffle/server-function';
 import { validateUser } from './authBackend';
 import { parseMDLocal } from './parseMD';
 

@@ -25,8 +25,8 @@ const PrivateRoute = ({ props, component: Component, ...rest }) => {
     };
 
     fetchData();
-    // eslint-disable-next-line
-  }, [authenticated]);
+
+  }, []);
 
   if (authenticated === undefined) {
     return null;
