@@ -1,6 +1,6 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
 import { getCurrentUser } from '@reshuffle/server-function';
-import { validateUser, validate } from './authBackend';
+import { validateUser } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
@@ -18,10 +18,9 @@ function cleanRoute(someRoute) {
 }
 
 /**
- * Authenticate a user using , and then validate
+ * Authenticate a user and then validate
  * the provided route by checking for null/undefined.
  *
- * @param { string }  - token used for identification
  * @param { string } route - site route that will be validated
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
@@ -57,41 +56,30 @@ export async function parseMD(markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(route) {
-  await authUserAndValidateRoute(
-    route,
-    'Cannot set undefined or null route as home',
-  );
+  await authUserAndValidateRoute(route, 'Cannot set undefined or null route as home');
   await update('homeRoute', () => route);
 }
 
 /**
  * Delete the post at the specified route
  *
- * @param { string }  - token used for identification
  * @param { string } route - which post to delete
  */
 /* @expose */
 export async function deletePostByRoute(route) {
-  await authUserAndValidateRoute(
-    route,
-    'Cannot delete undefined or null route',
-  );
+  await authUserAndValidateRoute(route, 'Cannot delete undefined or null route');
   await remove(`${contentPrefix}${route}`);
 }
 
 /**
  * Disable the post at the specified route
  *
- * @param { string }  - token used for identification
  * @param { string } route - which post to disable/enable
  * @param { boolean } disabled - enable or disable this route
  */
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
-  await authUserAndValidateRoute(
-    route,
-    'Cannot disable undefined or null route',
-  );
+  await authUserAndValidateRoute(route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
     disabled,
@@ -105,7 +93,6 @@ export async function setDisabledPostByRoute(route, disabled) {
  * contents frontmatter. If the content does not define a route
  * attribute, this method will fail.
  *
- * @param { string }  - token used for identification
  * @param { string } content - valid markdown content with fronmatter containing route
  * attribute
  */
@@ -127,7 +114,7 @@ export async function updateContent(content) {
   const route = cleanRoute(parsed.attributes.route);
 
   try {
-    await update(`${contentPrefix}${route}`, prevContent => ({
+    await update(`${contentPrefix}${route}`, (prevContent) => ({
       ...parsed,
       disabled: prevContent ? prevContent.disabled : true,
     }));
@@ -167,7 +154,6 @@ async function contentByRoute(route, authenticated) {
  * Authenticated route which retrieves the raw markdown
  * representation of existing content.
  *
- * @param { string }  - token used for identification
  * @param { string } route - route of raw markdown content to retrieve
  *
  * @return { string } - raw markdown for provided route
@@ -276,21 +262,4 @@ export async function getSitePublicMeta() {
   };
 }
 
-/**
- *
- * @return {boolean} - returns if user is REACT_APP_VALID_HOSTED_DOMAIN matches their email
- */
-/** @expose */
-export async function checkEmail() {
-  const profile = getCurrentUser(false);
-  if (profile === undefined) {
-    return false;
-  }
-  const isReshuffle = await validate();
 
-  if (isReshuffle) {
-    return true;
-  }
-
-  return false;
-}
