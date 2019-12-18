@@ -1,45 +1,25 @@
 import '@reshuffle/code-transform/macro';
-import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import React from 'react';
 import { useAuth } from '@reshuffle/react-auth';
-import { checkEmail } from '../../backend/contentBackend';
 
 import '../style/Auth.scss';
 
 export default props => {
-  const { getLoginURL, authenticated } = useAuth();
-  const [email, setEmail] = useState(false);
+  const { getLoginURL } = useAuth();
+  let path = 'editor'
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const value = await checkEmail();
-
-      setEmail(value);
-    };
-
-    fetchData();
-    // eslint-disable-next-line
-  }, [authenticated]);
-
-  if (authenticated === undefined) return null;
-
-  if (authenticated && email) {
-    // if the user authenticated, take user to Editor page
-    return <Redirect to='/editor' />;
-  }
-
-  if (authenticated && !email) {
-    return <Redirect to='/' />;
+  if (props.location.state !== undefined) {
+    path = props.location.state.path;
   }
 
   return (
     <div className='auth'>
       <a
-        href={getLoginURL(`${window.location.origin.toString()}/editor`)}
+        href={getLoginURL(`${window.location.origin.toString()}/${path}`)}
         className='auth-button'
       >
-        {`Click here to authenticate with Reshuffle Identity`}
+        Click here to authenticate with Reshuffle Identity
       </a>
     </div>
   );
-};
+}
