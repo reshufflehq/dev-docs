@@ -35,9 +35,9 @@ export default class Admin extends Component {
     await setDisabledPostByRoute(route, disabled);
     // optimistically update the local post state so it
     // reflects the recently accepted change in the backend
-    this.setState(prevState => {
+    this.setState((prevState) => {
       const { posts } = prevState;
-      const updated = posts.map(post => {
+      const updated = posts.map((post) => {
         if (post.route === route) {
           return {
             ...post,
@@ -51,23 +51,23 @@ export default class Admin extends Component {
     // start a lazy loaded background update as an
     // extra precaution against desync
     this.fetchRemoteMetadata();
-  };
+  }
 
-  deletePost = async route => {
+  deletePost = async (route) => {
     await deletePostByRoute(route);
     this.setState(prevState => {
       const { posts } = prevState;
       return {
-        posts: posts.filter(post => post.route !== route),
+        posts: posts.filter((post) => post.route !== route),
       };
     });
     this.fetchRemoteMetadata();
-  };
+  }
 
-  setRouteAsHome = async route => {
+  setRouteAsHome = async (route) => {
     await setRouteAsHome(route);
     this.setState({ homeRoute: route });
-  };
+  }
 
   makeAdminPosts() {
     if (this.state.posts) {
@@ -75,8 +75,7 @@ export default class Admin extends Component {
         const { route, title } = attributes;
         const isHome = this.state.homeRoute === route;
         return (
-          <PostCard
-            route={route}
+          <PostCard route={route}
             title={title}
             key={route}
             isHome={isHome}
