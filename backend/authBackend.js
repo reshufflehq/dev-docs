@@ -2,7 +2,7 @@ import { getCurrentUser } from '@reshuffle/server-function';
 const { REACT_APP_VALID_HOSTED_DOMAIN } = process.env;
 
 //throw error once user is not a valid domain
-function throwErr() {
+export async function throwErr() {
   throw new Error(`User not valid, ${REACT_APP_VALID_HOSTED_DOMAIN} is correct domain.`)
 }
 
