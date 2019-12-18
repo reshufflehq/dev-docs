@@ -6,16 +6,15 @@ import '../style/Auth.scss';
 
 export default props => {
   const { getLoginURL } = useAuth();
-  let path = 'editor'
-
-  if (props.location.state !== undefined) {
-    path = props.location.state.path;
-  }
+  let path = (props
+    && props.location
+    && props.location.state
+    && props.location.state.path) || 'editor';
 
   return (
     <div className='auth'>
       <a
-        href={getLoginURL(`${window.location.origin.toString()}/${path}`)}
+        href={getLoginURL(`${window.location.origin.toString()}${path}`)}
         className='auth-button'
       >
         Click here to authenticate with Reshuffle Identity
