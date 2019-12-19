@@ -22,7 +22,7 @@ function cleanRoute(someRoute) {
  * @param { string } route - site route that will be validated
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
-async function validateRoute(route, invalidRouteError) {
+function validateRoute(route, invalidRouteError) {
 
   if (route === undefined || route === null) {
     throw new Error(invalidRouteError || 'Invalid route');
@@ -40,8 +40,8 @@ async function validateRoute(route, invalidRouteError) {
  * @return { object } - parsed content and attributes
  */
 /* @expose */
-export async function parseMD(markdownContent) {
-  await validateUser();
+export function parseMD(markdownContent) {
+  validateUser();
 
   return parseMDLocal(markdownContent);
 }
@@ -55,7 +55,7 @@ export async function parseMD(markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(route) {
-  await validateUser();
+  validateUser();
   validateRoute(route, 'Cannot set undefined or null route as home');
   await update('homeRoute', () => route);
 }
@@ -67,7 +67,7 @@ export async function setRouteAsHome(route) {
  */
 /* @expose */
 export async function deletePostByRoute(route) {
-  await validateUser();
+  validateUser();
   validateRoute(route, 'Cannot delete undefined or null route');
   await remove(`${contentPrefix}${route}`);
 }
@@ -80,7 +80,7 @@ export async function deletePostByRoute(route) {
  */
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
-  await validateUser();
+  validateUser();
   validateRoute(route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
@@ -100,7 +100,7 @@ export async function setDisabledPostByRoute(route, disabled) {
  */
 /* @expose */
 export async function updateContent(content) {
-  await validateUser();
+  validateUser();
 
   // parse the client provided markdown to extract
   // the route attribute
@@ -163,7 +163,7 @@ async function contentByRoute(route, authenticated) {
  */
 /* @expose */
 export async function getContentByRoute(route) {
-  await validateUser();
+  validateUser();
 
   return await contentByRoute(route, true);
 }
@@ -224,8 +224,8 @@ async function getHomeRoute() {
  *
  * @return { object[] } - metadata of all content
  */
-async function getContentMetadata() {
-  const allContent = await getAllContent();
+function getContentMetadata() {
+  const allContent = getAllContent();
   return allContent.map(({ attributes, disabled }) => ({
     attributes,
     disabled,
@@ -237,17 +237,16 @@ async function getContentMetadata() {
  * site (including disabled content), along with
  * optionally defined "homeRoute".
  *
- * @param { string } - token used for identification
  *
  * @return {object} - metadata of content
  */
 /** @expose */
-export async function getSiteMetadata() {
-  await validateUser();
+export function getSiteMetadata() {
+  validateUser();
 
   return {
-    contentMeta: await getContentMetadata(),
-    homeRoute: await getHomeRoute(),
+    contentMeta: getContentMetadata(),
+    homeRoute: getHomeRoute(),
   };
 }
 
@@ -258,12 +257,12 @@ export async function getSiteMetadata() {
  * @return {object} - metadata of public content
  */
 /** @expose */
-export async function getSitePublicMeta() {
-  const contentMeta = await getContentMetadata();
+export function getSitePublicMeta() {
+  const contentMeta = getContentMetadata();
   const onlyPublicMeta = contentMeta.filter(({ disabled }) => !disabled);
   return {
     contentMeta: onlyPublicMeta.map(({ attributes }) => attributes),
-    homeRoute: await getHomeRoute(),
+    homeRoute: getHomeRoute(),
   };
 }
 
