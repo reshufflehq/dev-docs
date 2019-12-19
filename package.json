@@ -22,7 +22,7 @@
     "@reshuffle/db": "^0.5.5",
     "@reshuffle/fetch-runtime": "^0.1.0",
     "@reshuffle/local-proxy": "^0.3.4",
-    "@reshuffle/passport": "0.0.4",
+    "@reshuffle/passport": "^0.2.0",
     "@reshuffle/react-auth": "^0.1.7",
     "@reshuffle/server-function": "^0.2.2",
     "bootstrap": "^4.3.1",
