@@ -40,7 +40,7 @@ function validateRoute(route, invalidRouteError) {
  * @return { object } - parsed content and attributes
  */
 /* @expose */
-export function parseMD(markdownContent) {
+export async function parseMD(markdownContent) {
   validateUser();
 
   return parseMDLocal(markdownContent);
@@ -224,8 +224,8 @@ async function getHomeRoute() {
  *
  * @return { object[] } - metadata of all content
  */
-function getContentMetadata() {
-  const allContent = getAllContent();
+async function getContentMetadata() {
+  const allContent = await getAllContent();
   return allContent.map(({ attributes, disabled }) => ({
     attributes,
     disabled,
@@ -241,12 +241,12 @@ function getContentMetadata() {
  * @return {object} - metadata of content
  */
 /** @expose */
-export function getSiteMetadata() {
+export async function getSiteMetadata() {
   validateUser();
 
   return {
-    contentMeta: getContentMetadata(),
-    homeRoute: getHomeRoute(),
+    contentMeta: await getContentMetadata(),
+    homeRoute: await getHomeRoute(),
   };
 }
 
@@ -257,12 +257,12 @@ export function getSiteMetadata() {
  * @return {object} - metadata of public content
  */
 /** @expose */
-export function getSitePublicMeta() {
-  const contentMeta = getContentMetadata();
+export async function getSitePublicMeta() {
+  const contentMeta = await getContentMetadata();
   const onlyPublicMeta = contentMeta.filter(({ disabled }) => !disabled);
   return {
     contentMeta: onlyPublicMeta.map(({ attributes }) => attributes),
-    homeRoute: getHomeRoute(),
+    homeRoute: await getHomeRoute(),
   };
 }
 
