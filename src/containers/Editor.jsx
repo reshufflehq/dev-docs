@@ -130,7 +130,8 @@ export default class Editor extends Component {
                 <Alert variant={this.state.alertVariant}
                   onClose={
                     () => this.setState({
-                      showAlert: undefined, alertVariant: undefined
+                      showAlert: undefined,
+                      alertVariant: undefined
                     })
                   }
                   dismissible
