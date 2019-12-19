@@ -3,7 +3,6 @@ import { validateUser } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
-// const editedPrefix = 'editedBy__';
 
 // Routes must adhere to a specific format (because
 // they literally are turned into URL paths). No spaces
@@ -23,8 +22,7 @@ function cleanRoute(someRoute) {
  * @param { string } route - site route that will be validated
  * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
-async function authUserAndValidateRoute(route, invalidRouteError) {
-  await validateUser();
+async function validateRoute(route, invalidRouteError) {
 
   if (route === undefined || route === null) {
     throw new Error(invalidRouteError || 'Invalid route');
@@ -57,7 +55,8 @@ export async function parseMD(markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(route) {
-  await authUserAndValidateRoute(route, 'Cannot set undefined or null route as home');
+  await validateUser();
+  validateRoute(route, 'Cannot set undefined or null route as home');
   await update('homeRoute', () => route);
 }
 
@@ -68,7 +67,8 @@ export async function setRouteAsHome(route) {
  */
 /* @expose */
 export async function deletePostByRoute(route) {
-  await authUserAndValidateRoute(route, 'Cannot delete undefined or null route');
+  await validateUser();
+  validateRoute(route, 'Cannot delete undefined or null route');
   await remove(`${contentPrefix}${route}`);
 }
 
@@ -80,7 +80,8 @@ export async function deletePostByRoute(route) {
  */
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
-  await authUserAndValidateRoute(route, 'Cannot disable undefined or null route');
+  await validateUser();
+  validateRoute(route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
     disabled,
@@ -208,7 +209,7 @@ async function getAllContent() {
  * @return { string | undefined } - previously set homeRoute
  */
 async function getHomeRoute() {
-  return (await get('homeRoute')) || undefined;
+  return (await get('homeRoute'));
 }
 
 /**
