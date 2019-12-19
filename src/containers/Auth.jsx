@@ -3,7 +3,6 @@ import React from 'react';
 import { useAuth } from '@reshuffle/react-auth';
 
 import '../style/Auth.scss';
-
 export default props => {
   const { getLoginURL } = useAuth();
   let path = (props
