@@ -7,48 +7,34 @@ const domains = VALID_HOSTED_DOMAINS.split(' ');
 * validates if email is the right VALID_HOSTED_DOMAIN
 * setting getCurrentUser to false since I'm calling this function in the front end and I don't want
 * want the CRA to crash for not being logged in if user hits this function.
-/** @expose */
-export async function checkIfValidDomain() {
-  const profile = getCurrentUser(false);
+*/
+function checkIfValidDomain() {
+  const profile = getCurrentUser(true);
 
-  if (profile === undefined) {
-    return false;
-  }
+  if (profile) {
+    const emails = profile.emails.map((email) => {
+      return email.value.split('@')[1];
+    })
 
-  const emails = profile.emails.map((email) => {
-    return email.value
-  })
+    const match = emails.some((email) => domains.includes(email));
 
-  for (let i = 0; i < emails.length; i++) {
-    const email = emails[i]
-
-    for (let j = 0; j < domains.length; j++) {
-      const validDomain = domains[j]
-
-      if (email.includes(validDomain)) {
-        return true;
-      }
+    if (match) {
+      return true
     }
   }
 
-  return false;
+  throw new Error(`User cannot be authenticated, no valid host domain for ${profile.emails.join(', ')}.`)
 }
 
 
 /**
  *
- * @return {boolean} - returns if user is VALID_HOSTED_DOMAIN matches their email
- */
+ * @return {boolean} - returns true if user is a valid domain, if not function throws an error.
+ /** @expose */
 export async function validateUser() {
-  const profile = getCurrentUser(true);
+  await checkIfValidDomain()
 
-  const email = profile.emails[0].value;
-
-  if (!checkIfValidDomain()) {
-    throw new Error(`User cannot be authenticated, ${email} is not a valid host domain.`)
-  }
-
-  return true;
+  return true
 }
 
 
