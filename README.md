@@ -4,7 +4,7 @@ Content management is possible using hidden `'/editor'` route. To use this route
 
 ```
 
-VALID_HOSTED_DOMAIN= // email address domain allowed for admins	VALID_HOSTED_DOMAIN
+VALID_HOSTED_DOMAIN= // email address domain allowed for admins
 
 REACT_APP_OAUTH_CLIENT_ID= // https://developers.google.com/identity/protocols/OAuth2
 
