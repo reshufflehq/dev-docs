@@ -27,12 +27,12 @@ export default class Admin extends Component {
   }
 
   async fetchRemoteMetadata() {
-    const { contentMeta, homeRoute } = await getSiteMetadata(this.props.userToken);
+    const { contentMeta, homeRoute } = await getSiteMetadata();
     this.setState({ posts: contentMeta, homeRoute });
   }
 
   setPostDisabled = async (route, disabled) => {
-    await setDisabledPostByRoute(this.props.userToken, route, disabled);
+    await setDisabledPostByRoute(route, disabled);
     // optimistically update the local post state so it
     // reflects the recently accepted change in the backend
     this.setState((prevState) => {
@@ -54,18 +54,18 @@ export default class Admin extends Component {
   }
 
   deletePost = async (route) => {
-    await deletePostByRoute(this.props.userToken, route);
-    this.setState((prevState) => {
+    await deletePostByRoute(route);
+    this.setState(prevState => {
       const { posts } = prevState;
       return {
-        posts: posts.filter(post => post.route !== route)
+        posts: posts.filter((post) => post.route !== route),
       };
     });
     this.fetchRemoteMetadata();
   }
 
   setRouteAsHome = async (route) => {
-    await setRouteAsHome(this.props.userToken, route);
+    await setRouteAsHome(route);
     this.setState({ homeRoute: route });
   }
 
@@ -74,15 +74,17 @@ export default class Admin extends Component {
       return this.state.posts.map(({ disabled, attributes }) => {
         const { route, title } = attributes;
         const isHome = this.state.homeRoute === route;
-        return <PostCard route={route}
-                         title={title}
-                         key={route}
-                         isHome={isHome}
-                         isDisabled={disabled}
-                         setHome={this.setRouteAsHome}
-                         deletePost={this.deletePost}
-                         disablePost={this.setPostDisabled}
-               />
+        return (
+          <PostCard route={route}
+            title={title}
+            key={route}
+            isHome={isHome}
+            isDisabled={disabled}
+            setHome={this.setRouteAsHome}
+            deletePost={this.deletePost}
+            disablePost={this.setPostDisabled}
+          />
+        );
       });
     }
     return null;
@@ -91,9 +93,7 @@ export default class Admin extends Component {
   render() {
     return (
       <div className='admin'>
-        <div className='admin-posts'>
-          {this.makeAdminPosts()}
-        </div>
+        <div className='admin-posts'>{this.makeAdminPosts()}</div>
       </div>
     );
   }

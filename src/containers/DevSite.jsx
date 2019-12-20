@@ -119,8 +119,8 @@ class Devsite extends Component {
 
     return (
       <Button variant='dark'
-              size='lg'
-              onClick={() => { this.setState({ navOpen: !navOpen }) }}
+        size='lg'
+        onClick={() => { this.setState({ navOpen: !navOpen }) }}
       >
         <span className={className} aria-hidden='true'></span>
       </Button>
@@ -165,21 +165,21 @@ class Devsite extends Component {
 
     const ConfiguredSidebar = (
       <SidebarContent pages={grouped}
-                      handleLinkSelected={
-                        () => this.setState({ navOpen: false })
-                      }
-                      categories={sidebarCategories}
-                      standaloneItems={standaloneItems}
-                      isResponsive={navOpen}
-                      currentCat={currentCat}
-                      routeChanged={routeChanged}
+        handleLinkSelected={
+          () => this.setState({ navOpen: false })
+        }
+        categories={sidebarCategories}
+        standaloneItems={standaloneItems}
+        isResponsive={navOpen}
+        currentCat={currentCat}
+        routeChanged={routeChanged}
       />
     );
 
     return (
       <div className='root-container'>
         <div className='nav-shaper'>
-          <Nav/>
+          <Nav />
         </div>
         <div className='root-content'>
           <Sidebar
@@ -198,7 +198,7 @@ class Devsite extends Component {
             }
           </Sidebar>
           <div className='mobile-button'>
-            { this.getMobileButton() }
+            {this.getMobileButton()}
           </div>
         </div>
       </div>

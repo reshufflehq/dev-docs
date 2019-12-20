@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { AuthProvider } from '@reshuffle/react-auth';
 import * as serviceWorker from './serviceWorker';
 
 import 'sanitize.css';
@@ -15,11 +16,13 @@ import GA from './utils/GoogleAnalytics';
 import App from './App';
 
 ReactDOM.render(
-  <Router>
-    { GA.init() && <GA.RouteTracker /> }
-    <App />
-  </Router>,
-  document.getElementById('root')
+  <AuthProvider>
+    <Router>
+      {GA.init() && <GA.RouteTracker />}
+      <App />
+    </Router>
+  </AuthProvider>,
+  document.getElementById('root'),
 );
 
 // If you want your app to work offline and load faster, you can change
