@@ -1,5 +1,5 @@
 import { get, update, Q, find, remove } from '@reshuffle/db';
-import { validateUser } from './authBackend';
+import { checkIfValidDomain } from './authBackend';
 import { parseMDLocal } from './parseMD';
 
 const contentPrefix = 'content__';
@@ -41,7 +41,7 @@ function validateRoute(route, invalidRouteError) {
  */
 /* @expose */
 export async function parseMD(markdownContent) {
-  validateUser();
+  await checkIfValidDomain();
 
   return parseMDLocal(markdownContent);
 }
@@ -55,7 +55,7 @@ export async function parseMD(markdownContent) {
  */
 /* @expose */
 export async function setRouteAsHome(route) {
-  validateUser();
+  await checkIfValidDomain();
   validateRoute(route, 'Cannot set undefined or null route as home');
   await update('homeRoute', () => route);
 }
@@ -67,7 +67,7 @@ export async function setRouteAsHome(route) {
  */
 /* @expose */
 export async function deletePostByRoute(route) {
-  validateUser();
+  await checkIfValidDomain();
   validateRoute(route, 'Cannot delete undefined or null route');
   await remove(`${contentPrefix}${route}`);
 }
@@ -80,7 +80,7 @@ export async function deletePostByRoute(route) {
  */
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
-  validateUser();
+  await checkIfValidDomain();
   validateRoute(route, 'Cannot disable undefined or null route');
   await update(`${contentPrefix}${cleanRoute(route)}`, prevContent => ({
     ...prevContent,
@@ -100,7 +100,7 @@ export async function setDisabledPostByRoute(route, disabled) {
  */
 /* @expose */
 export async function updateContent(content) {
-  validateUser();
+  await checkIfValidDomain();
 
   // parse the client provided markdown to extract
   // the route attribute
@@ -163,7 +163,7 @@ async function contentByRoute(route, authenticated) {
  */
 /* @expose */
 export async function getContentByRoute(route) {
-  validateUser();
+  await checkIfValidDomain();
 
   return await contentByRoute(route, true);
 }
@@ -242,7 +242,7 @@ async function getContentMetadata() {
  */
 /** @expose */
 export async function getSiteMetadata() {
-  validateUser();
+  await checkIfValidDomain();
 
   return {
     contentMeta: await getContentMetadata(),
