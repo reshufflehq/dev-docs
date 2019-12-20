@@ -3,7 +3,6 @@ import get from 'lodash.get';
 const { VALID_HOSTED_DOMAINS } = process.env;
 const domains = VALID_HOSTED_DOMAINS.split(' ');
 
-
 /**
 * validates if email is the right VALID_HOSTED_DOMAIN
 * setting getCurrentUser to false since I'm calling this function in the front end and I don't want

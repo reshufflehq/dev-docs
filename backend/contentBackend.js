@@ -34,7 +34,6 @@ function validateRoute(route, invalidRouteError) {
  * into its valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
  *
- * @param { string }  - token used for identification
  * @param { string } markdownContent - content to parse
  *
  * @return { object } - parsed content and attributes
@@ -49,7 +48,6 @@ export async function parseMD(markdownContent) {
 /**
  * Set the site's home route
  *
- * @param { string }  - token used for identification
  * @param { string } route - route to set as home
  *
  */
