@@ -1,4 +1,3 @@
-import '@reshuffle/code-transform/macro';
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
