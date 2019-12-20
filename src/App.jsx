@@ -17,7 +17,6 @@ class App extends Component {
         <PrivateRoute exact path='/editor' component={Editor} />
         <PrivateRoute path='/admin' component={Admin} />
         <Route path='/auth' render={props => <Auth {...props} />} />
-
         <Route component={DevSite} props={this.props} />
       </Switch>
     );
