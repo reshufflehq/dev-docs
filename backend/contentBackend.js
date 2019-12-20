@@ -248,7 +248,7 @@ export async function getSiteMetadata() {
   };
 }
 
-/**
+/** 
  * Returns the metadata of all public content on the site,
  * along with the optionally defined "homeRoute".
  *
