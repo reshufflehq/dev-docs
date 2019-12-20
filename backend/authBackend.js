@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@reshuffle/server-function';
 import get from 'lodash.get';
+
 const { VALID_HOSTED_DOMAINS } = process.env;
 const domains = VALID_HOSTED_DOMAINS.split(' ');
 
