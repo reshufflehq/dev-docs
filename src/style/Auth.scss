@@ -7,9 +7,19 @@
   overflow: scroll;
 
   &-button {
+    display: flex;
+    text-align: center;
+    text-decoration: none;
+    align-items: center;
+    justify-content: center;
+    color: black;
     width: 80%;
     height: 15%;
     box-shadow: 1px 1px 1px;
-    border-top: 3px solid rgb(23, 128, 245);
+    border: 3px solid rgb(23, 128, 245);
+  }
+  :hover {
+    text-decoration: none;
+    color: inherit;
   }
 }
