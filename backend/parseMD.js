@@ -31,10 +31,6 @@ const processor = unified()
  *   parsed: string; // html repr of the input markdown content
  *   raw: string; // input markdown
  * }
- *
- * @param { string } markdownContent - content to parse
- *
- * @return { object } - the parsed markdown, frontmatter and raw
  */
 export async function parseMDLocal(markdownContent) {
   const fmContent = fm(markdownContent);

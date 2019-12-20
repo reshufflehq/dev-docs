@@ -18,9 +18,6 @@ function cleanRoute(someRoute) {
 /**
  * Authenticate a user and then validate
  * the provided route by checking for null/undefined.
- *
- * @param { string } route - site route that will be validated
- * @param { string } invalidRouteError - error that should be thrown on invalid route
  */
 function validateRoute(route, invalidRouteError) {
 
@@ -33,11 +30,7 @@ function validateRoute(route, invalidRouteError) {
  * Authenticated route which will convert raw markdown
  * into its valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
- *
- * @param { string } markdownContent - content to parse
- *
- * @return { object } - parsed content and attributes
- */
+ * 
 /* @expose */
 export async function parseMD(markdownContent) {
   await checkIfValidDomain();
@@ -47,10 +40,7 @@ export async function parseMD(markdownContent) {
 
 /**
  * Set the site's home route
- *
- * @param { string } route - route to set as home
- *
- */
+ * 
 /* @expose */
 export async function setRouteAsHome(route) {
   await checkIfValidDomain();
@@ -60,9 +50,7 @@ export async function setRouteAsHome(route) {
 
 /**
  * Delete the post at the specified route
- *
- * @param { string } route - which post to delete
- */
+ * 
 /* @expose */
 export async function deletePostByRoute(route) {
   await checkIfValidDomain();
@@ -72,10 +60,7 @@ export async function deletePostByRoute(route) {
 
 /**
  * Disable the post at the specified route
- *
- * @param { string } route - which post to disable/enable
- * @param { boolean } disabled - enable or disable this route
- */
+ * 
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
   await checkIfValidDomain();
@@ -92,10 +77,7 @@ export async function setDisabledPostByRoute(route, disabled) {
  * content is based on the route attribute defined in the
  * contents frontmatter. If the content does not define a route
  * attribute, this method will fail.
- *
- * @param { string } content - valid markdown content with fronmatter containing route
- * attribute
- */
+ * 
 /* @expose */
 export async function updateContent(content) {
   await checkIfValidDomain();
@@ -135,11 +117,6 @@ export async function updateContent(content) {
  * Retrieves the content stored at a specified route. If
  * the request is authenticated, disabled content will be
  * returned, otherwise an error will be thrown.
- *
- * @param { string } route - identifier of content being requested
- * @param { boolean } authenticated - is this request authenticated
- *
- * @return { object } - content located at specified route
  */
 async function contentByRoute(route, authenticated) {
   const content = await get(`${contentPrefix}${cleanRoute(route)}`);
@@ -154,11 +131,7 @@ async function contentByRoute(route, authenticated) {
 /**
  * Authenticated route which retrieves the raw markdown
  * representation of existing content.
- *
- * @param { string } route - route of raw markdown content to retrieve
- *
- * @return { string } - raw markdown for provided route
- */
+ * 
 /* @expose */
 export async function getContentByRoute(route) {
   await checkIfValidDomain();
@@ -169,12 +142,8 @@ export async function getContentByRoute(route) {
 /**
  * Load content from the backend. Case of the route does
  * not matter, as all routes are compared with lowercase.
- *
- * @param { string } routes - what the content is named
- *
- * @return { string } - html representation of the content
- */
-// @expose
+ * 
+/* @expose */
 export async function loadContentByRoute(route) {
   const { parsed } = await contentByRoute(route, false);
   return parsed;
@@ -192,9 +161,6 @@ export async function loadContentByRoute(route) {
  *   disabled?: boolean;
  *   attributes: object (can by anything included in frontmatter)
  * }
- *
- * @return { Content[] } - all of the content stored in the backend
- *
  */
 async function getAllContent() {
   const contentQuery = await find(Q.filter(Q.key.startsWith(contentPrefix)));
@@ -203,8 +169,6 @@ async function getAllContent() {
 
 /**
  * Returns the homeRoute or undefined if no home is set.
- *
- * @return { string | undefined } - previously set homeRoute
  */
 async function getHomeRoute() {
   return (await get('homeRoute'));
@@ -219,8 +183,6 @@ async function getHomeRoute() {
  *   disabled: boolean;
  *   attributes: object;
  * }
- *
- * @return { object[] } - metadata of all content
  */
 async function getContentMetadata() {
   const allContent = await getAllContent();
@@ -234,10 +196,7 @@ async function getContentMetadata() {
  * Returns the metadata representing all content on the
  * site (including disabled content), along with
  * optionally defined "homeRoute".
- *
- *
- * @return {object} - metadata of content
- */
+ * 
 /** @expose */
 export async function getSiteMetadata() {
   await checkIfValidDomain();
@@ -251,9 +210,7 @@ export async function getSiteMetadata() {
 /**
  * Returns the metadata of all public content on the site,
  * along with the optionally defined "homeRoute".
- *
- * @return {object} - metadata of public content
- */
+ * 
 /** @expose */
 export async function getSitePublicMeta() {
   const contentMeta = await getContentMetadata();
