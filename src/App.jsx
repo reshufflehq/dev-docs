@@ -12,9 +12,6 @@ class App extends Component {
   static contextType = AuthContext;
 
   render() {
-    // If the route is an auth or admin route, display it if user is right VALID_HOSTED_DOMAIN .
-    // Otherwise, defer to the DevSite nested routing
-
     return (
       <Switch>
         <PrivateRoute exact path='/editor' component={Editor} />
