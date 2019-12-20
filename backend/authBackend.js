@@ -2,7 +2,6 @@ import { getCurrentUser } from '@reshuffle/server-function';
 import get from 'lodash.get';
 
 const { VALID_HOSTED_DOMAINS } = process.env;
-const domains = VALID_HOSTED_DOMAINS.split(' ');
 
 /**
 * validates if email is the right VALID_HOSTED_DOMAIN
@@ -10,6 +9,7 @@ const domains = VALID_HOSTED_DOMAINS.split(' ');
 * want the CRA to crash for not being logged in if user hits this function.
 /** @expose */
 export async function checkIfValidDomain() {
+  const domains = VALID_HOSTED_DOMAINS.split(' ');
   const profile = getCurrentUser(true);
 
   if (get(profile, 'emails.length')) {
@@ -22,4 +22,16 @@ export async function checkIfValidDomain() {
 
   const emailString = profile.emails ? profile.emails.join(', ') : '"No email for user"';
   throw new Error(`User cannot be authenticated, no valid host domain for ${emailString}.`);
+}
+
+/**
+ * Checking if .env is found and has a VALID_HOSTED_DOMAIN domain
+ * 
+/* @expose */
+export async function hasCredentials() {
+  if (VALID_HOSTED_DOMAINS) {
+    return true;
+  }
+
+  return false;
 }

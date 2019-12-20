@@ -7,10 +7,12 @@ import Sidebar from 'react-sidebar';
 import Button from 'react-bootstrap/Button';
 
 import { getSitePublicMeta } from '../../backend/contentBackend';
+import { hasCredentials } from '../../backend/authBackend';
 
 import Routes from '../Routes';
 
 import SidebarContent from './SidebarContent';
+import EnvKeyBanner from './EnvKeyBanner';
 import Nav from './Nav';
 
 import '../style/DevSite.scss';
@@ -72,6 +74,7 @@ class Devsite extends Component {
       navOpen: false,
       postMeta: undefined,
       routeChanged: false,
+      hasCreds: true,
     };
   }
 
@@ -86,7 +89,10 @@ class Devsite extends Component {
   // fetch all of the posts metadata when the component mounts
   async componentDidMount() {
     try {
-      this.setState({ postMeta: await getSitePublicMeta() });
+      this.setState({
+        postMeta: await getSitePublicMeta(),
+        hasCreds: await hasCredentials(),
+      });
     } catch (err) {
       console.error('Failed to load post metadata');
     }
@@ -181,6 +187,7 @@ class Devsite extends Component {
         <div className='nav-shaper'>
           <Nav />
         </div>
+        {this.state.hasCreds ? null : <EnvKeyBanner />}
         <div className='root-content'>
           <Sidebar
             pullRight={true}

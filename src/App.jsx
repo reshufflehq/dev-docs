@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
-import { AuthContext } from '@reshuffle/react-auth';
 import DevSite from './containers/DevSite';
 import Auth from './containers/Auth';
 import Editor from './containers/Editor';
 import Admin from './containers/Admin';
 
 class App extends Component {
-  static contextType = AuthContext;
 
   render() {
     return (
