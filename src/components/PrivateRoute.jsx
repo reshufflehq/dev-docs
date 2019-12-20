@@ -10,22 +10,27 @@ import { checkIfValidDomain } from '../../backend/authBackend';
 const PrivateRoute = (props) => {
   const { component: Component, ...rest } = props;
   const { authenticated } = useAuth();
-  const [email, setEmail] = useState(false);
+  const [email, setEmail] = useState(undefined);
 
   useEffect(() => {
+    let relevant = true;
     const fetchData = async () => {
       try {
         const value = await checkIfValidDomain();
-        setEmail(value);
-
+        if (relevant) {
+          setEmail(value);
+        }
       } catch (err) {
-        console.error(err);
+        setEmail(false)
       }
     };
     fetchData();
+    return () => {
+      relevant = false;
+    }
   }, []);
 
-  if (authenticated === undefined) {
+  if (authenticated === undefined || email === undefined) {
     return null;
   }
 
