@@ -2,7 +2,7 @@ import '@reshuffle/code-transform/macro';
 import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useAuth } from '@reshuffle/react-auth';
-import { validateUser } from '../../backend/authBackend';
+import { checkIfValidDomain } from '../../backend/authBackend';
 
 /**
  * Standard React-router route that requires reshuffle identity
@@ -15,12 +15,11 @@ const PrivateRoute = (props) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const value = await validateUser();
+        const value = await checkIfValidDomain();
         setEmail(value);
 
       } catch (err) {
         console.error(err);
-        setEmail(false)
       }
     };
     fetchData();
