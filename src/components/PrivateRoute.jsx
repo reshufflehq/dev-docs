@@ -34,7 +34,7 @@ const PrivateRoute = (props) => {
       {...rest}
       render={routeProps => {
         if (authenticated && email) {
-          return <Component {...routeProps} {...props} />;
+          return <Component {...props} {...routeProps} />;
         } else if (authenticated && !email) {
           // if authenticated is false and the email is not the right domain, redirect to home page
           return <Redirect to='/' />;
