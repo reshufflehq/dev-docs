@@ -46,6 +46,7 @@ const sidebarStyles = {
 // these define the valid categories for the sidebar
 const sidebarCategories = [
   'Getting Started',
+  'Tutorial',
   'Main Concepts',
   'FAQ',
   'Other Goodies',
