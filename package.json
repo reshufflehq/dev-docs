@@ -35,6 +35,7 @@
     "jsonwebtoken": "^8.5.1",
     "lodash.get": "^4.4.2",
     "node-sass": "^4.12.0",
+    "path-to-regexp": "^1.7.0",
     "prismjs": "^1.17.1",
     "react": "^16.8.6",
     "react-bootstrap": "^1.0.0-beta.11",
