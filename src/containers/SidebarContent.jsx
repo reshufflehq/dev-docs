@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { NavLink, withRouter } from 'react-router-dom';
 
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
@@ -27,20 +27,17 @@ function Category({ category, pages, handleLinkSelected }) {
       const preText = numbered ? `${i + 1}.` : '';
       return (
         <div key={route}
-             className='sidebar-category-subitem'
+          className='sidebar-category-subitem'
         >
-          <Link key={route}
-                onClick={handleLinkSelected}
-                style={{
-                  textDecoration: 'none',
-                  color: 'black',
-                  outline: 'none'
-                }}
-                to={route}
+          <NavLink key={route}
+            className='subitem'
+            activeClassName='subitem-active'
+            to={'/' + route}
+            onClick={handleLinkSelected}
           >
             {preText} {title}
-          </Link>
-        </div>
+          </NavLink>
+        </div >
       );
     })
   }
@@ -103,7 +100,7 @@ function SidebarContent(props) {
     <div className='sidebar'>
       <div className={contentClass}>
         <Accordion className='sidebar-accordion'
-                   activeKey={activeKey}
+          activeKey={activeKey}
         >
           {
             categories.map((category, i) => {
@@ -114,18 +111,18 @@ function SidebarContent(props) {
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>
                     <Accordion.Toggle as={Button}
-                                      variant='link'
-                                      eventKey={eKey}
-                                      onClick={() => handleCategoryPicked(category)
-                    }>
+                      variant='link'
+                      eventKey={eKey}
+                      onClick={() => handleCategoryPicked(category)
+                      }>
                       <span className='sidebar-category'>
                         {category.toUpperCase()}&nbsp;&nbsp;
                       </span>
                       {
                         (activeKey === category) ?
-                          <img src={rightArrow} alt='Right arrow'/>
-                        :
-                          <img src={downArrow} alt='Down arrow'/>
+                          <img src={rightArrow} alt='Right arrow' />
+                          :
+                          <img src={downArrow} alt='Down arrow' />
                       }
                     </Accordion.Toggle>
                   </Card.Header>
@@ -133,8 +130,8 @@ function SidebarContent(props) {
                     <Card.Body>
                       {
                         <Category category={lowerCat}
-                                  pages={pagesByCategory}
-                                  handleLinkSelected={handleLinkSelected}
+                          pages={pagesByCategory}
+                          handleLinkSelected={handleLinkSelected}
                         />
                       }
                     </Card.Body>
@@ -152,15 +149,15 @@ function SidebarContent(props) {
                   <Card className={rClass} key={displayName}>
                     <Card.Header>
                       <a href={linkOrRoute}
-                         alt={displayName}
-                         className='sidebar-standalone-item'
+                        alt={displayName}
+                        className='sidebar-standalone-item'
                       >
                         <span className='sidebar-category'>
                           {displayName.toUpperCase()}
                         </span>
                         <img src={externalLink}
-                             alt='External link'
-                             className='sidebar-external-link-icon'
+                          alt='External link'
+                          className='sidebar-external-link-icon'
                         />
                       </a>
                     </Card.Header>
@@ -170,14 +167,14 @@ function SidebarContent(props) {
               return (
                 <Card className={rClass} key={displayName}>
                   <Card.Header>
-                    <Link to={linkOrRoute}
-                          alt={displayName}
-                          className='sidebar-standalone-item'
+                    <NavLink to={linkOrRoute}
+                      alt={displayName}
+                      className='sidebar-standalone-item'
                     >
                       <span className='sidebar-category'>
                         {displayName.toUpperCase()}
                       </span>
-                    </Link>
+                    </NavLink>
                   </Card.Header>
                 </Card>
               );
