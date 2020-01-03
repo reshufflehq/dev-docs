@@ -21,7 +21,8 @@ const PrivateRoute = (props) => {
           setEmail(value);
         }
       } catch (err) {
-        setEmail(false)
+        console.error(err);
+        setEmail(false);
       }
     };
     fetchData();
