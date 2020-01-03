@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Clipboard from 'clipboard';
 
 import * as hm from 'html-to-react'
 
@@ -23,6 +24,30 @@ const ContentContainer = function ({ html }) {
   // is always highlighted even after updates
   useEffect(() => {
     Prism.highlightAll();
+
+    const pres = document.getElementsByTagName("pre");
+
+    if (pres !== null) {
+      for (let codeSnippet of pres) {
+        if (codeSnippet.className === ' language-js' || codeSnippet.className === ' language-jsx') {
+          codeSnippet.innerHTML = `<div class="copy">copy</div><code class="${codeSnippet.className}">${codeSnippet.innerHTML}</code>`;
+        }
+      }
+      const clipboard = new Clipboard('.copy', {
+        target: trigger => {
+          return trigger.nextElementSibling;
+        }
+      });
+
+      clipboard.on('success', event => {
+        event.trigger.textContent = 'copied!';
+        setTimeout(() => {
+          event.clearSelection();
+          event.trigger.textContent = 'copy';
+        }, 2000);
+      });
+
+    }
   });
 
   // TODO: Fix issue with whitespace in generated React elements
@@ -32,11 +57,11 @@ const ContentContainer = function ({ html }) {
       <div className='content-container-inner'>
         {
           html !== undefined &&
-            <div id='markdown-content'
-                 className='markdown-body'
-            >
-              {htmlToReactParser.parse(html)}
-            </div>
+          <div id='markdown-content'
+            className='markdown-body'
+          >
+            {htmlToReactParser.parse(html)}
+          </div>
         }
       </div>
     </div>
