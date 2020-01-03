@@ -30,7 +30,7 @@ function validateRoute(route, invalidRouteError) {
  * Authenticated route which will convert raw markdown
  * into its valid HTML repr. Also returns frontmatter
  * attributes extracted from the original content.
- * 
+ *
 /* @expose */
 export async function parseMD(markdownContent) {
   await checkIfValidDomain();
@@ -40,7 +40,7 @@ export async function parseMD(markdownContent) {
 
 /**
  * Set the site's home route
- * 
+ *
 /* @expose */
 export async function setRouteAsHome(route) {
   await checkIfValidDomain();
@@ -60,7 +60,7 @@ export async function deletePostByRoute(route) {
 
 /**
  * Disable the post at the specified route
- * 
+ *
 /* @expose */
 export async function setDisabledPostByRoute(route, disabled) {
   await checkIfValidDomain();
@@ -77,7 +77,7 @@ export async function setDisabledPostByRoute(route, disabled) {
  * content is based on the route attribute defined in the
  * contents frontmatter. If the content does not define a route
  * attribute, this method will fail.
- * 
+ *
 /* @expose */
 export async function updateContent(content) {
   await checkIfValidDomain();
@@ -131,7 +131,7 @@ async function contentByRoute(route, authenticated) {
 /**
  * Authenticated route which retrieves the raw markdown
  * representation of existing content.
- * 
+ *
 /* @expose */
 export async function getContentByRoute(route) {
   await checkIfValidDomain();
@@ -142,7 +142,7 @@ export async function getContentByRoute(route) {
 /**
  * Load content from the backend. Case of the route does
  * not matter, as all routes are compared with lowercase.
- * 
+ *
 /* @expose */
 export async function loadContentByRoute(route) {
   const { parsed } = await contentByRoute(route, false);
@@ -196,7 +196,7 @@ async function getContentMetadata() {
  * Returns the metadata representing all content on the
  * site (including disabled content), along with
  * optionally defined "homeRoute".
- * 
+ *
 /** @expose */
 export async function getSiteMetadata() {
   await checkIfValidDomain();
@@ -210,7 +210,7 @@ export async function getSiteMetadata() {
 /**
  * Returns the metadata of all public content on the site,
  * along with the optionally defined "homeRoute".
- * 
+ *
 /** @expose */
 export async function getSitePublicMeta() {
   const contentMeta = await getContentMetadata();
