@@ -74,7 +74,7 @@ class Devsite extends Component {
       navOpen: false,
       postMeta: undefined,
       routeChanged: false,
-      hasCreds: true,
+      hasCreds: false,
     };
   }
 
@@ -187,7 +187,9 @@ class Devsite extends Component {
         <div className='nav-shaper'>
           <Nav />
         </div>
-        {this.state.hasCreds ? null : <EnvKeyBanner />}
+        {!this.state.hasCreds && (
+          <EnvKeyBanner />
+        )}
         <div className='root-content'>
           <Sidebar
             pullRight={true}

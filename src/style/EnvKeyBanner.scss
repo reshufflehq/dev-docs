@@ -3,10 +3,10 @@
     background-color: #fff3cd;
     border-color: #ffeeba;
     position: relative;
-    padding: .75rem 1.25rem;
-    margin-bottom: 1rem;
+    padding: 12px 20px;
+    margin-bottom: 16px;
     border: 1px solid transparent;
-    border-radius: .25rem;
+    border-radius: 5px;
 
     p {
         display: flex;
@@ -15,7 +15,7 @@
 
     a {
         color: #533f03;
-        padding: 0 .25rem;
+        padding: 0 5px;
         font-weight: 700;
     }
 }

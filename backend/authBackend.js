@@ -29,9 +29,5 @@ export async function checkIfValidDomain() {
  * 
 /* @expose */
 export async function hasCredentials() {
-  if (VALID_HOSTED_DOMAINS) {
-    return true;
-  }
-
-  return false;
-}
+  return VALID_HOSTED_DOMAINS;
+} 

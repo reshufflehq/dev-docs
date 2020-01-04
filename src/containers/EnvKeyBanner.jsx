@@ -1,5 +1,4 @@
 import React from 'react';
-
 import '../style/EnvKeyBanner.scss';
 
 const EnvKeyBanner = () => {
