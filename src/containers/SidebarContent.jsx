@@ -25,23 +25,45 @@ function Category({ category, pages, handleLinkSelected }) {
     return prioritized.map(({ route, title, numbered }, i) => {
       // if the page is numbered, use the current map index
       const preText = numbered ? `${i + 1}.` : '';
+      
       return (
-        <div key={route}
-             className='sidebar-category-subitem'
-        >
-          <NavLink key={route}
-            className='subitem'
-            activeClassName='subitem-active'
-            to={'/' + route}
-            onClick={handleLinkSelected}
-          >
-            {preText} {title}
-          </NavLink>
-        </div>
+        <CategoryItem key={route}
+                      preText={preText} 
+                      route={route} 
+                      title={title} 
+                      handleLinkSelected={handleLinkSelected} />
       );
     })
   }
   return null;
+}
+
+function CategoryItem({route, title, preText, handleLinkSelected}) {
+  const [active, setActive] = useState(false);
+  
+  const isActive = (match, location) => {
+    if (match) {
+      setActive(true)
+      return;
+    }
+    setActive(false);
+  }
+    
+  return (
+    <div key={route}
+         className='sidebar-category-subitem'
+    >
+      {active ? (<span className='sidebar-category-subitem-active'/>) : null}
+      <NavLink key={route}
+        className='sidebar-category-subitem-item'
+        isActive={isActive}
+        to={'/' + route}
+        onClick={handleLinkSelected}
+      >
+        {preText} {title}
+      </NavLink>
+    </div>
+  );
 }
 
 // Displays a TOC for all navigable content on the site.

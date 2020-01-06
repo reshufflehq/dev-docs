@@ -17,7 +17,7 @@ import Nav from './Nav';
 
 import '../style/DevSite.scss';
 
-const sidebarWidth = '450px';
+const sidebarWidth = '350px';
 
 // react-sidebar requires you to pass styles
 const sidebarStyles = {

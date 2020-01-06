@@ -7,7 +7,7 @@
     // TODO: Replace with global style and rem
     font-family: Roboto;
     font-style: bold;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   &-content {
@@ -92,14 +92,20 @@
   &-category-subitem {
     margin: 5% 0;
 
-    .subitem {
+    &-item, &-item:hover {
       color: #000;
       text-decoration: none;
     }
 
-    .subitem-active {
+    &-active {
+      height: 10%;
+      position: absolute;
+      left: 15px;
       border-left: 3px solid #16ac60;
-      padding-left: 16px;
+      
+      @media only screen and (max-width: 1100px) {
+        left: 0;
+      }
     }
   }
 
