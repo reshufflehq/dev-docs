@@ -53,11 +53,11 @@ const ContentContainer = function ({ html }) {
       <div className='content-container-inner'>
         {
           html !== undefined &&
-          <div id='markdown-content'
-            className='markdown-body'
-          >
-            {htmlToReactParser.parse(html)}
-          </div>
+           <div id='markdown-content'
+               className='markdown-body'
+           >
+             {htmlToReactParser.parse(html)}
+           </div>
         }
       </div>
     </div>
