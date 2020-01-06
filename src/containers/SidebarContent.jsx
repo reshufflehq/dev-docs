@@ -27,7 +27,7 @@ function Category({ category, pages, handleLinkSelected }) {
       const preText = numbered ? `${i + 1}.` : '';
       return (
         <div key={route}
-          className='sidebar-category-subitem'
+             className='sidebar-category-subitem'
         >
           <NavLink key={route}
             className='subitem'
@@ -37,7 +37,7 @@ function Category({ category, pages, handleLinkSelected }) {
           >
             {preText} {title}
           </NavLink>
-        </div >
+        </div>
       );
     })
   }
@@ -111,27 +111,27 @@ function SidebarContent(props) {
                 <Card className={rClass} key={lowerCat}>
                   <Card.Header>
                     <Accordion.Toggle as={Button}
-                      variant='link'
-                      eventKey={eKey}
-                      onClick={() => handleCategoryPicked(category)
-                      }>
+                                      variant='link'
+                                      eventKey={eKey}
+                                      onClick={() => handleCategoryPicked(category)
+                    }>
                       <span className='sidebar-category'>
                         {category.toUpperCase()}&nbsp;&nbsp;
                       </span>
                       {
                         (activeKey === category) ?
-                          <img src={rightArrow} alt='Right arrow' />
-                          :
-                          <img src={downArrow} alt='Down arrow' />
+                          <img src={rightArrow} alt='Right arrow'/>
+                        :
+                          <img src={downArrow} alt='Down arrow'/>
                       }
                     </Accordion.Toggle>
                   </Card.Header>
                   <Accordion.Collapse eventKey={eKey}>
-                    <Card.Body>
+                    <Card.Body style={{ padding: '1.25rem 3.5rem' }}>
                       {
                         <Category category={lowerCat}
-                          pages={pagesByCategory}
-                          handleLinkSelected={handleLinkSelected}
+                                  pages={pagesByCategory}
+                                  handleLinkSelected={handleLinkSelected}
                         />
                       }
                     </Card.Body>
@@ -149,15 +149,15 @@ function SidebarContent(props) {
                   <Card className={rClass} key={displayName}>
                     <Card.Header>
                       <a href={linkOrRoute}
-                        alt={displayName}
-                        className='sidebar-standalone-item'
+                         alt={displayName}
+                         className='sidebar-standalone-item'
                       >
                         <span className='sidebar-category'>
                           {displayName.toUpperCase()}
                         </span>
                         <img src={externalLink}
-                          alt='External link'
-                          className='sidebar-external-link-icon'
+                             alt='External link'
+                             className='sidebar-external-link-icon'
                         />
                       </a>
                     </Card.Header>
@@ -168,8 +168,8 @@ function SidebarContent(props) {
                 <Card className={rClass} key={displayName}>
                   <Card.Header>
                     <NavLink to={linkOrRoute}
-                      alt={displayName}
-                      className='sidebar-standalone-item'
+                             alt={displayName}
+                             className='sidebar-standalone-item'
                     >
                       <span className='sidebar-category'>
                         {displayName.toUpperCase()}

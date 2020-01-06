@@ -11,8 +11,6 @@
   }
 
   &-content {
-    margin-left: 10%;
-    margin-right: 10%;
     margin-top: 20%;
   }
 
@@ -25,7 +23,7 @@
 
   &-accordion {
     .card:not(:first-child) {
-      margin-top: 10%;
+      margin-top: 7%;
     }
 
     .responsive-card:not(:first-child) {
@@ -62,6 +60,10 @@
       text-decoration: none;
       color: black;
       font-weight: 600;
+      
+      @media only screen and (min-width: 800px) {
+        padding-left: 10%;
+      }
     }
 
     .btn-link:hover, .btn-link:focus {
@@ -78,17 +80,13 @@
     margin: 5% 0;
 
     .subitem {
-      color: black;
+      color: #000;
       text-decoration: none;
     }
 
     .subitem-active {
-      width: 4px;
-      height: 25px;
       border-left: 3px solid #16ac60;
       padding-left: 16px;
-      left: 0;
-      margin-top: -3px;
     }
   }
 
