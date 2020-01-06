@@ -100,7 +100,7 @@ function SidebarContent(props) {
     <div className='sidebar'>
       <div className={contentClass}>
         <Accordion className='sidebar-accordion'
-          activeKey={activeKey}
+                   activeKey={activeKey}
         >
           {
             categories.map((category, i) => {
