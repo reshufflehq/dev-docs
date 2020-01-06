@@ -19,6 +19,11 @@
     margin-right: 10%;
     margin-top: 10%;
     padding-bottom: 100px;
+    
+    @media only screen and (max-width: 800px) {
+      margin-left: 7%;
+      margin-right: 0;
+    }
   }
 
   &-accordion {
@@ -63,6 +68,14 @@
       
       @media only screen and (min-width: 800px) {
         padding-left: 10%;
+      }
+    }
+    
+    .custom-card-body {
+      padding: 1.25rem 3.5rem;
+      
+      @media only screen and (max-width: 800px) {
+        padding: 1.25rem;
       }
     }
 

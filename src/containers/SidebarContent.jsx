@@ -127,7 +127,7 @@ function SidebarContent(props) {
                     </Accordion.Toggle>
                   </Card.Header>
                   <Accordion.Collapse eventKey={eKey}>
-                    <Card.Body style={{ padding: '1.25rem 3.5rem' }}>
+                    <Card.Body className='custom-card-body'>
                       {
                         <Category category={lowerCat}
                                   pages={pagesByCategory}
