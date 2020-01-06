@@ -30,7 +30,7 @@ const ContentContainer = function ({ html }) {
     if (pres !== null) {
       for (let codeSnippet of pres) {
         if (codeSnippet.className === ' language-js' || codeSnippet.className === ' language-jsx') {
-          codeSnippet.innerHTML = `<div class="copy">copy</div><code class="${codeSnippet.className}">${codeSnippet.innerHTML}</code>`;
+          codeSnippet.innerHTML = `<div class="copy"><i class="fas fa-copy"></i></div><code class="${codeSnippet.className}">${codeSnippet.innerHTML}</code>`;
         }
       }
       const clipboard = new Clipboard('.copy', {
