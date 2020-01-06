@@ -41,10 +41,6 @@ const ContentContainer = function ({ html }) {
 
       clipboard.on('success', event => {
         event.trigger.textContent = 'copied!';
-        setTimeout(() => {
-          event.clearSelection();
-          event.trigger.textContent = 'copy';
-        }, 2000);
       });
 
     }

@@ -52,15 +52,17 @@ pre[class*="language-"] {
 
 pre[class*="language-"] .copy {
   content: "copy";
-  padding: 2px 10px 0;
+  border-radius: 5px;
+  padding: 5px 10px;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 15px;
+  right: -10px;
   transform: translate(-10px, -90%);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   color: white;
-  background: #1b2b34;
+  background: rgb(18,29,35);
+  background: linear-gradient(180deg, rgba(18,29,35,1) 61%, rgba(27,43,52,1) 100%);
   cursor: pointer;
   transition: all 200ms ease;
 }
