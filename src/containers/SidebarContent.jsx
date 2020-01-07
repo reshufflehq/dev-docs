@@ -55,7 +55,7 @@ function CategoryItem({route, title, preText, handleLinkSelected}) {
     >
       {active ? (<span className='sidebar-category-subitem-active'/>) : null}
       <NavLink key={route}
-        className='sidebar-category-subitem-item'
+        className={`sidebar-category-subitem-item ${active ? 'sidebar-category-subitem-active-text': null}`}
         isActive={isActive}
         to={'/' + route}
         onClick={handleLinkSelected}
