@@ -25,18 +25,18 @@ const ContentContainer = function ({ html }) {
   useEffect(() => {
     Prism.highlightAll();
 
-    const pres = document.getElementsByTagName("pre");
+    const pres = document.getElementsByTagName('pre');
 
     if (pres !== null) {
       for (let codeSnippet of pres) {
-        if (codeSnippet.className === ' language-js' || codeSnippet.className === ' language-jsx') {
+        if (codeSnippet.className === ' language-bash'
+          || codeSnippet.className === ' language-js'
+          || codeSnippet.className === ' language-jsx') {
           codeSnippet.innerHTML = `<div class="copy"><i class="fas fa-copy"></i></div><code class="${codeSnippet.className}">${codeSnippet.innerHTML}</code>`;
         }
       }
       const clipboard = new Clipboard('.copy', {
-        target: trigger => {
-          return trigger.nextElementSibling;
-        }
+        target: ({ nextElementSibling }) => nextElementSibling
       });
 
       clipboard.on('success', event => {
