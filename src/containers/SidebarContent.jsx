@@ -41,13 +41,13 @@ function Category({ category, pages, handleLinkSelected }) {
 function CategoryItem({route, title, preText, handleLinkSelected}) {
   const [active, setActive] = useState(false);
   
-  const isActive = (match, location) => {
-    if (match) {
-      setActive(true)
-      return;
+  const isActive = (match) => {
+    if (!(match && active)) {
+      setActive(match);      
     }
-    setActive(false);
-  }
+
+    return match;
+  };
     
   return (
     <div key={route}
@@ -55,7 +55,7 @@ function CategoryItem({route, title, preText, handleLinkSelected}) {
     >
       {active ? (<span className='sidebar-category-subitem-active'/>) : null}
       <NavLink key={route}
-        className={`sidebar-category-subitem-item ${active ? 'sidebar-category-subitem-active-text': null}`}
+        className={`sidebar-category-subitem-item ${active ? 'sidebar-category-subitem-active-text': ''}`}
         isActive={isActive}
         to={'/' + route}
         onClick={handleLinkSelected}
