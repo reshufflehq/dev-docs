@@ -145,7 +145,7 @@ function SidebarContent(props) {
             })
           }
           {
-            [] &&
+            standaloneItems &&
             standaloneItems.map(({ displayName, linkOrRoute }) => {
               const extLink = isExternal(linkOrRoute);
               if (extLink) {
