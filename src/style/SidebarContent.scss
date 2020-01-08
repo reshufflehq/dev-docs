@@ -105,8 +105,12 @@
       height: 24px;
       padding-left: 16px;
       position: absolute;
-      left: 15px;
+      left: 25px;
       border-left: 3px solid #16ac60;
+      
+      @media only screen and (max-width: 800px) {
+        left: 5px;
+      }
     }
   }
 
