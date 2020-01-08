@@ -96,7 +96,8 @@ function SidebarContent(props) {
   // to warrant responisve content
   const rClass = isResponsive ? 'responsive-card' : '';
   const contentClass = isResponsive ?
-    'sidebar-responsive-content' : 'sidebar-content';
+    'sidebar-default-margin sidebar-responsive-content' : 
+    'sidebar-default-margin sidebar-content';
   const activeKey = isResponsive ? undefined : pickedCat;
 
   return (
@@ -144,7 +145,7 @@ function SidebarContent(props) {
             })
           }
           {
-            standaloneItems &&
+            [] &&
             standaloneItems.map(({ displayName, linkOrRoute }) => {
               const extLink = isExternal(linkOrRoute);
               if (extLink) {
