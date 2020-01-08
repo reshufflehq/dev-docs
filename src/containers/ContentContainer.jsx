@@ -40,6 +40,7 @@ const ContentContainer = function ({ html }) {
       });
 
       clipboard.on('success', event => {
+        event.clearSelection();
         event.trigger.textContent = 'copied!';
       });
 
