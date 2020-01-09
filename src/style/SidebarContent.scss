@@ -6,6 +6,7 @@
   &-default-margin {
     margin-left: 10%;
     margin-right: 10%;
+    margin-top: 10%;
   }
   
   &-category {
@@ -20,7 +21,6 @@
   }
 
   &-responsive-content {
-    margin-top: 10%;
     padding-bottom: 100px;
   }
 
@@ -83,7 +83,7 @@
   &-standalone-item {
     color: inherit;
     text-decoration: inherit;
-    margin-top: 10%;
+    margin-bottom: 3%;
   }
 
   // keep this human sized

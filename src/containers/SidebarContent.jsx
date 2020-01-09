@@ -95,9 +95,12 @@ function SidebarContent(props) {
   // determines whether the current view area is small enough
   // to warrant responisve content
   const rClass = isResponsive ? 'responsive-card' : '';
-  const contentClass = isResponsive ?
-    'sidebar-default-margin sidebar-responsive-content' : 
-    'sidebar-default-margin sidebar-content';
+  const contentClass = `sidebar-default-margin
+    ${isResponsive ? 
+          'sidebar-responsive-content' 
+        : 
+          'sidebar-content'}
+  `;
   const activeKey = isResponsive ? undefined : pickedCat;
 
   return (
